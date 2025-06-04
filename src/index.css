@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,19 +36,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -96,6 +90,44 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* Custom styles for Leaflet map */
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-popup-tip {
+  background: white;
+  border: none;
+  box-shadow: none;
+}
+
+/* Improve map controls styling */
+.leaflet-control-zoom a {
+  border-radius: 4px !important;
+}
+
+.leaflet-control-zoom a:first-child {
+  border-radius: 4px 4px 0 0 !important;
+}
+
+.leaflet-control-zoom a:last-child {
+  border-radius: 0 0 4px 4px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .leaflet-control-zoom {
+    margin-left: 10px !important;
+    margin-top: 10px !important;
   }
 }
