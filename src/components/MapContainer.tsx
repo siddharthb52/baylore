@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -49,7 +48,7 @@ const sampleHistoricalPoints: HistoricalPoint[] = [
     lng: -122.4194,
     summary: 'Known as the "crookedest street in the world," this zigzag section was created in 1922 to reduce the hill\'s natural 27% grade.',
     category: 'Street',
-    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400&h=300&fit=crop'
   },
   {
     id: '4',
@@ -58,7 +57,7 @@ const sampleHistoricalPoints: HistoricalPoint[] = [
     lng: -122.4058,
     summary: 'Built in 1933 with funds from Lillie Hitchcock Coit, a socialite who loved firefighters and left money to beautify San Francisco.',
     category: 'Monument',
-    imageUrl: 'https://images.unsplash.com/photo-1472396961693-142e6e269027?w=400&h=300&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'
   },
   {
     id: '5',
@@ -67,7 +66,7 @@ const sampleHistoricalPoints: HistoricalPoint[] = [
     lng: -122.4486,
     summary: 'Originally built for the 1915 Panama-Pacific Exposition, this Roman-inspired structure was the only building meant to survive the fair.',
     category: 'Architecture',
-    imageUrl: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=400&h=300&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&h=300&fit=crop'
   }
 ];
 
