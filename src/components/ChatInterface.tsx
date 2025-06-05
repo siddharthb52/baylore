@@ -13,27 +13,21 @@ interface Message {
 }
 
 interface ChatInterfaceProps {
-  userType: 'visitor' | 'local';
   currentLocation?: { lat: number; lng: number };
   isOpen: boolean;
   onToggle: () => void;
 }
 
-const sampleResponses = {
-  visitor: [
-    "Welcome to the Bay Area! Based on your location, I'd recommend visiting the nearby Golden Gate Bridge - it's an absolute must-see with incredible views and fascinating construction history.",
-    "As a visitor, you might enjoy exploring Fisherman's Wharf and taking a ferry to Alcatraz Island. The prison tour offers amazing insights into San Francisco's past!",
-    "For a unique experience, take a ride on the historic cable cars - they've been operating since 1873 and offer a fun way to see the city's steep hills."
-  ],
-  local: [
-    "Since you're a local, you might appreciate some hidden gems! Have you explored the Columbarium in Richmond? It's a beautiful, peaceful spot with stunning architecture that many locals overlook.",
-    "As someone familiar with the area, you might enjoy the lesser-known history of Balmy Alley's murals in the Mission - they tell incredible stories of Central American culture and politics.",
-    "For a local perspective, check out the Wave Organ near the Marina - this acoustic sculpture uses wave action to create music, and it's especially beautiful at sunset."
-  ]
-};
+const sampleResponses = [
+  "Welcome to the Bay Area! Based on your location, I'd recommend visiting the nearby Golden Gate Bridge - it's an absolute must-see with incredible views and fascinating construction history.",
+  "You might enjoy exploring Fisherman's Wharf and taking a ferry to Alcatraz Island. The prison tour offers amazing insights into San Francisco's past!",
+  "For a unique experience, take a ride on the historic cable cars - they've been operating since 1873 and offer a fun way to see the city's steep hills.",
+  "Have you explored the Columbarium in Richmond? It's a beautiful, peaceful spot with stunning architecture that many visitors overlook.",
+  "Check out the lesser-known history of Balmy Alley's murals in the Mission - they tell incredible stories of Central American culture and politics.",
+  "The Wave Organ near the Marina is fascinating - this acoustic sculpture uses wave action to create music, and it's especially beautiful at sunset."
+];
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ 
-  userType, 
   currentLocation, 
   isOpen, 
   onToggle 
@@ -42,9 +36,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     {
       id: '1',
       type: 'bot',
-      content: userType === 'visitor' 
-        ? "Hi there! Welcome to BayLore. I'm your AI guide to Bay Area history. What would you like to explore today?"
-        : "Hello! I see you're exploring as a local. I'd love to help you discover hidden historical gems in your own backyard. What interests you?",
+      content: "Hi there! Welcome to BayLore. I'm your AI guide to Bay Area history. What would you like to explore today?",
       timestamp: new Date()
     }
   ]);
@@ -76,8 +68,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
     // Simulate AI response
     setTimeout(() => {
-      const responses = sampleResponses[userType];
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      const randomResponse = sampleResponses[Math.floor(Math.random() * sampleResponses.length)];
       
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),

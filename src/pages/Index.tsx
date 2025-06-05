@@ -5,7 +5,6 @@ import { ChatInterface } from '@/components/ChatInterface';
 import { Header } from '@/components/Header';
 
 const Index = () => {
-  const [userType, setUserType] = useState<'visitor' | 'local'>('visitor');
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | undefined>();
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -14,24 +13,15 @@ const Index = () => {
     console.log('Location selected:', { lat, lng });
   };
 
-  const handleUserTypeChange = (type: 'visitor' | 'local') => {
-    setUserType(type);
-    console.log('User type changed to:', type);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 relative overflow-hidden">
-      <Header userType={userType} onUserTypeChange={handleUserTypeChange} />
+      <Header />
       
       <main className="pt-16 h-screen">
-        <MapContainer 
-          onLocationSelect={handleLocationSelect}
-          userType={userType}
-        />
+        <MapContainer onLocationSelect={handleLocationSelect} />
       </main>
 
       <ChatInterface
-        userType={userType}
         currentLocation={currentLocation}
         isOpen={isChatOpen}
         onToggle={() => setIsChatOpen(!isChatOpen)}

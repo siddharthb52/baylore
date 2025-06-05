@@ -4,7 +4,6 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MapIcon, MessageCircle, Users, User } from 'lucide-react';
 
 // Fix for default markers in Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -21,6 +20,7 @@ interface HistoricalPoint {
   lng: number;
   summary: string;
   category: string;
+  imageUrl: string;
 }
 
 const sampleHistoricalPoints: HistoricalPoint[] = [
@@ -30,7 +30,8 @@ const sampleHistoricalPoints: HistoricalPoint[] = [
     lat: 37.8199,
     lng: -122.4783,
     summary: 'Opened in 1937, this iconic suspension bridge was once called "the bridge that couldn\'t be built" due to treacherous currents and frequent fog.',
-    category: 'Architecture'
+    category: 'Architecture',
+    imageUrl: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop'
   },
   {
     id: '2',
@@ -38,7 +39,8 @@ const sampleHistoricalPoints: HistoricalPoint[] = [
     lat: 37.8267,
     lng: -122.4233,
     summary: 'Former federal prison that housed infamous inmates like Al Capone. Originally a military fortification before becoming "The Rock" in 1934.',
-    category: 'Prison'
+    category: 'Prison',
+    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop'
   },
   {
     id: '3',
@@ -46,7 +48,8 @@ const sampleHistoricalPoints: HistoricalPoint[] = [
     lat: 37.8021,
     lng: -122.4194,
     summary: 'Known as the "crookedest street in the world," this zigzag section was created in 1922 to reduce the hill\'s natural 27% grade.',
-    category: 'Street'
+    category: 'Street',
+    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop'
   },
   {
     id: '4',
@@ -54,7 +57,8 @@ const sampleHistoricalPoints: HistoricalPoint[] = [
     lat: 37.8024,
     lng: -122.4058,
     summary: 'Built in 1933 with funds from Lillie Hitchcock Coit, a socialite who loved firefighters and left money to beautify San Francisco.',
-    category: 'Monument'
+    category: 'Monument',
+    imageUrl: 'https://images.unsplash.com/photo-1472396961693-142e6e269027?w=400&h=300&fit=crop'
   },
   {
     id: '5',
@@ -62,16 +66,16 @@ const sampleHistoricalPoints: HistoricalPoint[] = [
     lat: 37.8035,
     lng: -122.4486,
     summary: 'Originally built for the 1915 Panama-Pacific Exposition, this Roman-inspired structure was the only building meant to survive the fair.',
-    category: 'Architecture'
+    category: 'Architecture',
+    imageUrl: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=400&h=300&fit=crop'
   }
 ];
 
 interface MapContainerProps {
   onLocationSelect?: (lat: number, lng: number) => void;
-  userType: 'visitor' | 'local';
 }
 
-export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect, userType }) => {
+export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const [selectedPoint, setSelectedPoint] = useState<HistoricalPoint | null>(null);
@@ -131,22 +135,6 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect, us
   return (
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
-      
-      {/* User type indicator */}
-      <div className="absolute top-4 right-4 z-[1000]">
-        <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-lg">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-2">
-              {userType === 'visitor' ? (
-                <Users className="w-4 h-4 text-bay-blue" />
-              ) : (
-                <User className="w-4 h-4 text-bay-blue" />
-              )}
-              <span className="text-sm font-medium capitalize">{userType} Mode</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Selected point popup */}
       {selectedPoint && (
@@ -168,7 +156,14 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect, us
                 {selectedPoint.category}
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3">
+              <div className="w-full h-48 rounded-lg overflow-hidden">
+                <img 
+                  src={selectedPoint.imageUrl} 
+                  alt={selectedPoint.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <p className="text-gray-700 text-sm leading-relaxed">{selectedPoint.summary}</p>
             </CardContent>
           </Card>
