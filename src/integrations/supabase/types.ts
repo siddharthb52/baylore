@@ -9,7 +9,57 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      landmarks: {
+        Row: {
+          architect: string | null
+          category: string
+          created_at: string
+          fun_facts: string[] | null
+          historical_significance: string | null
+          id: string
+          image_url: string | null
+          latitude: number
+          longitude: number
+          summary: string
+          title: string
+          updated_at: string
+          website_url: string | null
+          year_built: number | null
+        }
+        Insert: {
+          architect?: string | null
+          category: string
+          created_at?: string
+          fun_facts?: string[] | null
+          historical_significance?: string | null
+          id?: string
+          image_url?: string | null
+          latitude: number
+          longitude: number
+          summary: string
+          title: string
+          updated_at?: string
+          website_url?: string | null
+          year_built?: number | null
+        }
+        Update: {
+          architect?: string | null
+          category?: string
+          created_at?: string
+          fun_facts?: string[] | null
+          historical_significance?: string | null
+          id?: string
+          image_url?: string | null
+          latitude?: number
+          longitude?: number
+          summary?: string
+          title?: string
+          updated_at?: string
+          website_url?: string | null
+          year_built?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

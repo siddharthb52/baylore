@@ -1,8 +1,12 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { useLandmarks } from '@/hooks/useLandmarks';
+import { Landmark } from '@/types/landmarks';
 
 // Fix for default markers in Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -12,64 +16,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-interface HistoricalPoint {
-  id: string;
-  title: string;
-  lat: number;
-  lng: number;
-  summary: string;
-  category: string;
-  imageUrl: string;
-}
-
-const sampleHistoricalPoints: HistoricalPoint[] = [
-  {
-    id: '1',
-    title: 'Golden Gate Bridge',
-    lat: 37.8199,
-    lng: -122.4783,
-    summary: 'Opened in 1937, this iconic suspension bridge was once called "the bridge that couldn\'t be built" due to treacherous currents and frequent fog.',
-    category: 'Architecture',
-    imageUrl: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop'
-  },
-  {
-    id: '2',
-    title: 'Alcatraz Island',
-    lat: 37.8267,
-    lng: -122.4233,
-    summary: 'Former federal prison that housed infamous inmates like Al Capone. Originally a military fortification before becoming "The Rock" in 1934.',
-    category: 'Prison',
-    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop'
-  },
-  {
-    id: '3',
-    title: 'Lombard Street',
-    lat: 37.8021,
-    lng: -122.4194,
-    summary: 'Known as the "crookedest street in the world," this zigzag section was created in 1922 to reduce the hill\'s natural 27% grade.',
-    category: 'Street',
-    imageUrl: 'https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400&h=300&fit=crop'
-  },
-  {
-    id: '4',
-    title: 'Coit Tower',
-    lat: 37.8024,
-    lng: -122.4058,
-    summary: 'Built in 1933 with funds from Lillie Hitchcock Coit, a socialite who loved firefighters and left money to beautify San Francisco.',
-    category: 'Monument',
-    imageUrl: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'
-  },
-  {
-    id: '5',
-    title: 'Palace of Fine Arts',
-    lat: 37.8035,
-    lng: -122.4486,
-    summary: 'Originally built for the 1915 Panama-Pacific Exposition, this Roman-inspired structure was the only building meant to survive the fair.',
-    category: 'Architecture',
-    imageUrl: 'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&h=300&fit=crop'
-  }
-];
-
 interface MapContainerProps {
   onLocationSelect?: (lat: number, lng: number) => void;
 }
@@ -77,7 +23,10 @@ interface MapContainerProps {
 export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
-  const [selectedPoint, setSelectedPoint] = useState<HistoricalPoint | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
+  const [selectedPoint, setSelectedPoint] = useState<Landmark | null>(null);
+  
+  const { data: landmarks, isLoading, error } = useLandmarks();
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -91,6 +40,28 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
     }).addTo(map);
 
     mapInstanceRef.current = map;
+
+    // Map click handler
+    map.on('click', (e) => {
+      if (onLocationSelect) {
+        onLocationSelect(e.latlng.lat, e.latlng.lng);
+      }
+    });
+
+    return () => {
+      // Clear existing markers
+      markersRef.current.forEach(marker => marker.remove());
+      markersRef.current = [];
+      map.remove();
+    };
+  }, [onLocationSelect]);
+
+  useEffect(() => {
+    if (!mapInstanceRef.current || !landmarks) return;
+
+    // Clear existing markers
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
 
     // Create custom icon for historical points
     const historicalIcon = L.divIcon({
@@ -106,34 +77,45 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
       iconAnchor: [16, 32],
     });
 
-    // Add historical points to map
-    sampleHistoricalPoints.forEach(point => {
-      const marker = L.marker([point.lat, point.lng], { icon: historicalIcon })
-        .addTo(map);
+    // Add landmarks to map
+    landmarks.forEach(landmark => {
+      const marker = L.marker([landmark.latitude, landmark.longitude], { icon: historicalIcon })
+        .addTo(mapInstanceRef.current!);
       
       marker.on('click', () => {
-        setSelectedPoint(point);
+        setSelectedPoint(landmark);
         if (onLocationSelect) {
-          onLocationSelect(point.lat, point.lng);
+          onLocationSelect(landmark.latitude, landmark.longitude);
         }
       });
-    });
 
-    // Map click handler
-    map.on('click', (e) => {
-      if (onLocationSelect) {
-        onLocationSelect(e.latlng.lat, e.latlng.lng);
-      }
+      markersRef.current.push(marker);
     });
+  }, [landmarks, onLocationSelect]);
 
-    return () => {
-      map.remove();
-    };
-  }, [onLocationSelect]);
+  if (error) {
+    console.error('Error loading landmarks:', error);
+    return (
+      <div className="relative w-full h-full flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-2">Error loading landmarks</p>
+          <p className="text-gray-500 text-sm">Please try refreshing the page</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
+
+      {isLoading && (
+        <div className="absolute top-4 left-4 z-[1000]">
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
+            <p className="text-sm text-gray-600">Loading landmarks...</p>
+          </div>
+        </div>
+      )}
 
       {/* Selected point popup */}
       {selectedPoint && (
@@ -151,19 +133,48 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
                   ×
                 </Button>
               </div>
-              <div className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-golden-accent/10 text-golden-accent">
-                {selectedPoint.category}
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="bg-golden-accent/10 text-golden-accent">
+                  {selectedPoint.category}
+                </Badge>
+                {selectedPoint.year_built && (
+                  <Badge variant="outline" className="text-xs">
+                    Built {selectedPoint.year_built}
+                  </Badge>
+                )}
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="w-full h-48 rounded-lg overflow-hidden">
-                <img 
-                  src={selectedPoint.imageUrl} 
-                  alt={selectedPoint.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              {selectedPoint.image_url && (
+                <div className="w-full h-48 rounded-lg overflow-hidden">
+                  <img 
+                    src={selectedPoint.image_url} 
+                    alt={selectedPoint.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
               <p className="text-gray-700 text-sm leading-relaxed">{selectedPoint.summary}</p>
+              
+              {selectedPoint.architect && (
+                <div className="text-xs text-gray-600">
+                  <strong>Architect:</strong> {selectedPoint.architect}
+                </div>
+              )}
+              
+              {selectedPoint.fun_facts && selectedPoint.fun_facts.length > 0 && (
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-gray-700">Fun Facts:</p>
+                  <ul className="text-xs text-gray-600 space-y-1">
+                    {selectedPoint.fun_facts.slice(0, 2).map((fact, index) => (
+                      <li key={index} className="flex items-start gap-1">
+                        <span className="text-golden-accent mt-1">•</span>
+                        <span>{fact}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
