@@ -27,7 +27,7 @@ const Index = () => {
         onToggle={() => setIsChatOpen(!isChatOpen)}
       />
 
-      {/* Welcome overlay for first-time users */}
+      {/* Welcome overlay for first-time users. This will disappear once the user clicks the map and the current location becomes defined. */}
       {!currentLocation && (
         <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-[999] pointer-events-none">
           <div className="text-center text-white bg-black/50 p-8 rounded-lg backdrop-blur-sm pointer-events-auto max-w-md mx-4">
