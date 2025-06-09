@@ -40,7 +40,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
 
     mapInstanceRef.current = map;
 
-    // Map click handler - only trigger for direct map clicks (not marker clicks)
+    // Map click handler
     map.on('click', (e) => {
       if (onLocationSelect) {
         onLocationSelect(e.latlng.lat, e.latlng.lng);
@@ -81,14 +81,16 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
       const marker = L.marker([landmark.latitude, landmark.longitude], { icon: historicalIcon })
         .addTo(mapInstanceRef.current!);
       
-      // Only set the selected point when clicking landmark markers, don't update location
       marker.on('click', () => {
         setSelectedPoint(landmark);
+        if (onLocationSelect) {
+          onLocationSelect(landmark.latitude, landmark.longitude);
+        }
       });
 
       markersRef.current.push(marker);
     });
-  }, [landmarks]);
+  }, [landmarks, onLocationSelect]);
 
   if (error) {
     console.error('Error loading landmarks:', error);
