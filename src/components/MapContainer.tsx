@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -41,7 +40,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
 
     mapInstanceRef.current = map;
 
-    // Map click handler
+    // Map click handler - only trigger for direct map clicks (not marker clicks)
     map.on('click', (e) => {
       if (onLocationSelect) {
         onLocationSelect(e.latlng.lat, e.latlng.lng);
@@ -82,16 +81,14 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
       const marker = L.marker([landmark.latitude, landmark.longitude], { icon: historicalIcon })
         .addTo(mapInstanceRef.current!);
       
+      // Only set the selected point when clicking landmark markers, don't update location
       marker.on('click', () => {
         setSelectedPoint(landmark);
-        if (onLocationSelect) {
-          onLocationSelect(landmark.latitude, landmark.longitude);
-        }
       });
 
       markersRef.current.push(marker);
     });
-  }, [landmarks, onLocationSelect]);
+  }, [landmarks]);
 
   if (error) {
     console.error('Error loading landmarks:', error);
