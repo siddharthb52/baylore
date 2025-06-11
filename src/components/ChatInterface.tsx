@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { MessageCircle, Send, Bot, User } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Message {
   id: string;
@@ -17,15 +18,6 @@ interface ChatInterfaceProps {
   isOpen: boolean;
   onToggle: () => void;
 }
-
-const sampleResponses = [
-  "Welcome to the Bay Area! Based on your location, I'd recommend visiting the nearby Golden Gate Bridge - it's an absolute must-see with incredible views and fascinating construction history.",
-  "You might enjoy exploring Fisherman's Wharf and taking a ferry to Alcatraz Island. The prison tour offers amazing insights into San Francisco's past!",
-  "For a unique experience, take a ride on the historic cable cars - they've been operating since 1873 and offer a fun way to see the city's steep hills.",
-  "Have you explored the Columbarium in Richmond? It's a beautiful, peaceful spot with stunning architecture that many visitors overlook.",
-  "Check out the lesser-known history of Balmy Alley's murals in the Mission - they tell incredible stories of Central American culture and politics.",
-  "The Wave Organ near the Marina is fascinating - this acoustic sculpture uses wave action to create music, and it's especially beautiful at sunset."
-];
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ 
   currentLocation, 
@@ -53,7 +45,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || isTyping) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -66,20 +58,40 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const randomResponse = sampleResponses[Math.floor(Math.random() * sampleResponses.length)];
-      
+    try {
+      console.log('Calling bay-area-chat function...');
+      const { data, error } = await supabase.functions.invoke('bay-area-chat', {
+        body: {
+          message: inputValue,
+          currentLocation: currentLocation
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        content: randomResponse,
+        content: data.response,
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, botMessage]);
+    } catch (error) {
+      console.error('Error calling AI:', error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: 'bot',
+        content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.",
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
