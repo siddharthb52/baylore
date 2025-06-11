@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -17,13 +18,18 @@ L.Icon.Default.mergeOptions({
 
 interface MapContainerProps {
   onLocationSelect?: (lat: number, lng: number) => void;
+  selectedLandmark: Landmark | null;
+  onLandmarkSelect: (landmark: Landmark | null) => void;
 }
 
-export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) => {
+export const MapContainer: React.FC<MapContainerProps> = ({ 
+  onLocationSelect, 
+  selectedLandmark, 
+  onLandmarkSelect 
+}) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
-  const [selectedPoint, setSelectedPoint] = useState<Landmark | null>(null);
   const [markersAdded, setMarkersAdded] = useState(false);
   
   const { data: landmarks, isLoading, error } = useLandmarks();
@@ -90,14 +96,14 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
         .addTo(mapInstanceRef.current!);
       
       marker.on('click', () => {
-        setSelectedPoint(landmark);
+        onLandmarkSelect(landmark);
       });
 
       markersRef.current.push(marker);
     });
 
     setMarkersAdded(true);
-  }, [landmarks, markersAdded]);
+  }, [landmarks, markersAdded, onLandmarkSelect]);
 
   if (error) {
     console.error('Error loading landmarks:', error);
@@ -124,16 +130,16 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
       )}
 
       {/* Selected point popup */}
-      {selectedPoint && (
+      {selectedLandmark && (
         <div className="absolute bottom-4 left-4 right-4 z-[1000] md:left-auto md:w-96">
           <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl animate-fade-in">
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between">
-                <CardTitle className="text-lg text-bay-blue">{selectedPoint.title}</CardTitle>
+                <CardTitle className="text-lg text-bay-blue">{selectedLandmark.title}</CardTitle>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setSelectedPoint(null)}
+                  onClick={() => onLandmarkSelect(null)}
                   className="h-auto p-1 text-gray-500 hover:text-gray-700"
                 >
                   ×
@@ -141,38 +147,38 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="bg-golden-accent/10 text-golden-accent">
-                  {selectedPoint.category}
+                  {selectedLandmark.category}
                 </Badge>
-                {selectedPoint.year_built && (
+                {selectedLandmark.year_built && (
                   <Badge variant="outline" className="text-xs">
-                    Built {selectedPoint.year_built}
+                    Built {selectedLandmark.year_built}
                   </Badge>
                 )}
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              {selectedPoint.image_url && (
+              {selectedLandmark.image_url && (
                 <div className="w-full h-48 rounded-lg overflow-hidden">
                   <img 
-                    src={selectedPoint.image_url} 
-                    alt={selectedPoint.title}
+                    src={selectedLandmark.image_url} 
+                    alt={selectedLandmark.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
               )}
-              <p className="text-gray-700 text-sm leading-relaxed">{selectedPoint.summary}</p>
+              <p className="text-gray-700 text-sm leading-relaxed">{selectedLandmark.summary}</p>
               
-              {selectedPoint.architect && (
+              {selectedLandmark.architect && (
                 <div className="text-xs text-gray-600">
-                  <strong>Architect:</strong> {selectedPoint.architect}
+                  <strong>Architect:</strong> {selectedLandmark.architect}
                 </div>
               )}
               
-              {selectedPoint.fun_facts && selectedPoint.fun_facts.length > 0 && (
+              {selectedLandmark.fun_facts && selectedLandmark.fun_facts.length > 0 && (
                 <div className="space-y-1">
                   <p className="text-xs font-medium text-gray-700">Fun Facts:</p>
                   <ul className="text-xs text-gray-600 space-y-1">
-                    {selectedPoint.fun_facts.slice(0, 2).map((fact, index) => (
+                    {selectedLandmark.fun_facts.slice(0, 2).map((fact, index) => (
                       <li key={index} className="flex items-start gap-1">
                         <span className="text-golden-accent mt-1">•</span>
                         <span>{fact}</span>

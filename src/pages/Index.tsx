@@ -3,14 +3,40 @@ import React, { useState } from 'react';
 import { MapContainer } from '@/components/MapContainer';
 import { ChatInterface } from '@/components/ChatInterface';
 import { Header } from '@/components/Header';
+import { Landmark } from '@/types/landmarks';
 
 const Index = () => {
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | undefined>();
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
+  const [landmarkBeforeChat, setLandmarkBeforeChat] = useState<Landmark | null>(null);
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setCurrentLocation({ lat, lng });
     console.log('Location selected:', { lat, lng });
+  };
+
+  const handleChatToggle = () => {
+    if (!isChatOpen) {
+      // Opening chat - remember current landmark and hide it
+      setLandmarkBeforeChat(selectedLandmark);
+      setSelectedLandmark(null);
+    } else {
+      // Closing chat - restore the landmark that was showing before chat opened
+      setSelectedLandmark(landmarkBeforeChat);
+      setLandmarkBeforeChat(null);
+    }
+    setIsChatOpen(!isChatOpen);
+  };
+
+  const handleLandmarkSelect = (landmark: Landmark | null) => {
+    if (isChatOpen) {
+      // If chat is open, update what landmark should be restored when chat closes
+      setLandmarkBeforeChat(landmark);
+    } else {
+      // If chat is closed, show the landmark immediately
+      setSelectedLandmark(landmark);
+    }
   };
 
   return (
@@ -18,13 +44,17 @@ const Index = () => {
       <Header />
       
       <main className="pt-16 h-screen">
-        <MapContainer onLocationSelect={handleLocationSelect} />
+        <MapContainer 
+          onLocationSelect={handleLocationSelect}
+          selectedLandmark={selectedLandmark}
+          onLandmarkSelect={handleLandmarkSelect}
+        />
       </main>
 
       <ChatInterface
         currentLocation={currentLocation}
         isOpen={isChatOpen}
-        onToggle={() => setIsChatOpen(!isChatOpen)}
+        onToggle={handleChatToggle}
       />
 
       {/* Welcome overlay for first-time users. This will disappear once the user clicks the map and the current location becomes defined. */}
