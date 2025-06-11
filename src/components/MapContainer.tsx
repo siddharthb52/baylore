@@ -83,14 +83,11 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
       
       marker.on('click', () => {
         setSelectedPoint(landmark);
-        if (onLocationSelect) {
-          onLocationSelect(landmark.latitude, landmark.longitude);
-        }
       });
 
       markersRef.current.push(marker);
     });
-  }, [landmarks, onLocationSelect]);
+  }, [landmarks]);
 
   if (error) {
     console.error('Error loading landmarks:', error);
