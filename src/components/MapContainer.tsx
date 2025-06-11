@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -30,7 +29,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
   const { data: landmarks, isLoading, error } = useLandmarks();
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || mapInstanceRef.current) return;
 
     // Initialize map centered on SF Bay Area
     const map = L.map(mapRef.current).setView([37.7749, -122.4194], 12);
@@ -42,18 +41,29 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
 
     mapInstanceRef.current = map;
 
-    // Map click handler
-    map.on('click', (e) => {
-      if (onLocationSelect) {
-        onLocationSelect(e.latlng.lat, e.latlng.lng);
-      }
-    });
-
     return () => {
-      // Clear existing markers
+      // Only clean up on component unmount
       markersRef.current.forEach(marker => marker.remove());
       markersRef.current = [];
       map.remove();
+      mapInstanceRef.current = null;
+    };
+  }, []); // Remove onLocationSelect from dependencies
+
+  // Set up click handler separately
+  useEffect(() => {
+    if (!mapInstanceRef.current || !onLocationSelect) return;
+
+    const handleMapClick = (e: L.LeafletMouseEvent) => {
+      onLocationSelect(e.latlng.lat, e.latlng.lng);
+    };
+
+    mapInstanceRef.current.on('click', handleMapClick);
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.off('click', handleMapClick);
+      }
     };
   }, [onLocationSelect]);
 
