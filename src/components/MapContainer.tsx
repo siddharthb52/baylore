@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -24,6 +25,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
   const [selectedPoint, setSelectedPoint] = useState<Landmark | null>(null);
+  const [markersAdded, setMarkersAdded] = useState(false);
   
   const { data: landmarks, isLoading, error } = useLandmarks();
 
@@ -56,11 +58,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
   }, [onLocationSelect]);
 
   useEffect(() => {
-    if (!mapInstanceRef.current || !landmarks) return;
-
-    // Clear existing markers
-    markersRef.current.forEach(marker => marker.remove());
-    markersRef.current = [];
+    if (!mapInstanceRef.current || !landmarks || landmarks.length === 0 || markersAdded) return;
 
     // Create custom icon for historical points
     const historicalIcon = L.divIcon({
@@ -87,7 +85,9 @@ export const MapContainer: React.FC<MapContainerProps> = ({ onLocationSelect }) 
 
       markersRef.current.push(marker);
     });
-  }, [landmarks]);
+
+    setMarkersAdded(true);
+  }, [landmarks, markersAdded]);
 
   if (error) {
     console.error('Error loading landmarks:', error);
