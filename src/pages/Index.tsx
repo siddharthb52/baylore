@@ -33,17 +33,25 @@ const Index = () => {
   };
 
   const handleLandmarkSelect = (landmark: Landmark | null) => {
-    console.log('Landmark select called:', { landmark: landmark?.title, isChatOpen, currentSelected: selectedLandmark?.title });
+    console.log('=== LANDMARK SELECT START ===');
+    console.log('Landmark select called:', { 
+      landmark: landmark?.title, 
+      isChatOpen, 
+      currentSelected: selectedLandmark?.title,
+      landmarkToRestoreAfterChat: landmarkToRestoreAfterChat?.title 
+    });
     
     if (isChatOpen) {
       // If chat is open, update what landmark should be shown when chat closes
-      console.log('Chat is open - updating landmarkToRestoreAfterChat to:', landmark?.title);
+      console.log('Chat is open - BEFORE updating landmarkToRestoreAfterChat:', landmarkToRestoreAfterChat?.title);
       setLandmarkToRestoreAfterChat(landmark);
+      console.log('Chat is open - AFTER setting landmarkToRestoreAfterChat to:', landmark?.title);
     } else {
       // If chat is closed, show the landmark immediately
       console.log('Chat is closed - setting selectedLandmark to:', landmark?.title);
       setSelectedLandmark(landmark);
     }
+    console.log('=== LANDMARK SELECT END ===');
   };
 
   return (
