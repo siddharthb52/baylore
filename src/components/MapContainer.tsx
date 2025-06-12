@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -95,7 +94,10 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       const marker = L.marker([landmark.latitude, landmark.longitude], { icon: historicalIcon })
         .addTo(mapInstanceRef.current!);
       
-      marker.on('click', () => {
+      marker.on('click', (e) => {
+        console.log('Marker clicked:', landmark.title);
+        // Stop event propagation to prevent map click
+        L.DomEvent.stopPropagation(e);
         onLandmarkSelect(landmark);
       });
 
