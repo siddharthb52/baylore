@@ -9,7 +9,7 @@ const Index = () => {
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | undefined>();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
-  const [landmarkBeforeChat, setLandmarkBeforeChat] = useState<Landmark | null>(null);
+  const [landmarkToRestoreAfterChat, setLandmarkToRestoreAfterChat] = useState<Landmark | null>(null);
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setCurrentLocation({ lat, lng });
@@ -18,21 +18,21 @@ const Index = () => {
 
   const handleChatToggle = () => {
     if (!isChatOpen) {
-      // Opening chat - remember current landmark and hide it
-      setLandmarkBeforeChat(selectedLandmark);
+      // Opening chat - remember current landmark to restore later and hide it
+      setLandmarkToRestoreAfterChat(selectedLandmark);
       setSelectedLandmark(null);
     } else {
-      // Closing chat - restore the landmark that was showing before chat opened
-      setSelectedLandmark(landmarkBeforeChat);
-      setLandmarkBeforeChat(null);
+      // Closing chat - restore the landmark that should be shown
+      setSelectedLandmark(landmarkToRestoreAfterChat);
+      setLandmarkToRestoreAfterChat(null);
     }
     setIsChatOpen(!isChatOpen);
   };
 
   const handleLandmarkSelect = (landmark: Landmark | null) => {
     if (isChatOpen) {
-      // If chat is open, update what landmark should be restored when chat closes
-      setLandmarkBeforeChat(landmark);
+      // If chat is open, update what landmark should be shown when chat closes
+      setLandmarkToRestoreAfterChat(landmark);
     } else {
       // If chat is closed, show the landmark immediately
       setSelectedLandmark(landmark);
