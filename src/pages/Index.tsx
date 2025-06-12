@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { MapContainer } from '@/components/MapContainer';
 import { ChatInterface } from '@/components/ChatInterface';
@@ -17,12 +16,16 @@ const Index = () => {
   };
 
   const handleChatToggle = () => {
+    console.log('Chat toggle - before:', { isChatOpen, selectedLandmark: selectedLandmark?.title, landmarkToRestoreAfterChat: landmarkToRestoreAfterChat?.title });
+    
     if (!isChatOpen) {
       // Opening chat - remember current landmark to restore later and hide it
       setLandmarkToRestoreAfterChat(selectedLandmark);
       setSelectedLandmark(null);
+      console.log('Opening chat - storing landmark:', selectedLandmark?.title);
     } else {
       // Closing chat - restore the landmark that should be shown
+      console.log('Closing chat - restoring landmark:', landmarkToRestoreAfterChat?.title);
       setSelectedLandmark(landmarkToRestoreAfterChat);
       setLandmarkToRestoreAfterChat(null);
     }
@@ -30,11 +33,15 @@ const Index = () => {
   };
 
   const handleLandmarkSelect = (landmark: Landmark | null) => {
+    console.log('Landmark select called:', { landmark: landmark?.title, isChatOpen, currentSelected: selectedLandmark?.title });
+    
     if (isChatOpen) {
       // If chat is open, update what landmark should be shown when chat closes
+      console.log('Chat is open - updating landmarkToRestoreAfterChat to:', landmark?.title);
       setLandmarkToRestoreAfterChat(landmark);
     } else {
       // If chat is closed, show the landmark immediately
+      console.log('Chat is closed - setting selectedLandmark to:', landmark?.title);
       setSelectedLandmark(landmark);
     }
   };
