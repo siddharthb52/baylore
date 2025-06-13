@@ -112,16 +112,13 @@ const getIconForCategory = (category: string) => {
     });
   }
   
-  // Nature Preserve - Tree icon
+  // Nature Preserve - Custom trees SVG
   if (categoryLower.includes('nature') || categoryLower.includes('preserve')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M12 2C8.5 4 6 7.5 6 11c0 2.5 1.5 4.5 3.5 5.5L8 22h8l-1.5-5.5C16.5 15.5 18 13.5 18 11c0-3.5-2.5-7-6-9z"/>',
-        '#10B981'
-      ),
+    return L.icon({
+      iconUrl: '/trees.svg',
       iconSize: [32, 32],
       iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
     });
   }
   
