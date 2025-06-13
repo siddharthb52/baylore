@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -96,19 +97,35 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       const marker = L.marker([landmark.latitude, landmark.longitude], { icon: historicalIcon })
         .addTo(mapInstanceRef.current!);
       
+      // Store landmark data on the marker for later use
+      (marker as any).landmarkData = landmark;
+      markersRef.current.push(marker);
+    });
+
+    setMarkersAdded(true);
+  }, [landmarks, markersAdded]);
+
+  // Separate effect to handle marker click events with current isChatOpen state
+  useEffect(() => {
+    if (!markersAdded || markersRef.current.length === 0) return;
+
+    // Remove existing click handlers
+    markersRef.current.forEach(marker => {
+      marker.off('click');
+    });
+
+    // Add fresh click handlers with current state
+    markersRef.current.forEach(marker => {
       marker.on('click', (e) => {
+        const landmark = (marker as any).landmarkData;
         console.log('Marker clicked:', landmark.title);
         console.log('isChatOpen at marker click:', isChatOpen);
         // Stop event propagation to prevent map click
         L.DomEvent.stopPropagation(e);
         onLandmarkSelect(landmark);
       });
-
-      markersRef.current.push(marker);
     });
-
-    setMarkersAdded(true);
-  }, [landmarks, markersAdded, onLandmarkSelect, isChatOpen]);
+  }, [markersAdded, isChatOpen, onLandmarkSelect]);
 
   if (error) {
     console.error('Error loading landmarks:', error);
