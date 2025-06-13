@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -22,6 +21,90 @@ interface MapContainerProps {
   onLandmarkSelect: (landmark: Landmark | null) => void;
   isChatOpen: boolean;
 }
+
+// Function to get icon based on category
+const getIconForCategory = (category: string) => {
+  const getIconHtml = (iconPath: string, bgColor: string) => `
+    <div class="rounded-full w-8 h-8 flex items-center justify-center shadow-lg border-2 border-white" style="background-color: ${bgColor}">
+      <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+        ${iconPath}
+      </svg>
+    </div>
+  `;
+
+  const categoryLower = category.toLowerCase();
+  
+  if (categoryLower.includes('bridge')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path fill-rule="evenodd" d="M2 10a8 8 0 018-8 8 8 0 018 8 8 8 0 01-8 8 8 8 0 01-8-8zm4-2a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />',
+        '#4F46E5'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  if (categoryLower.includes('building') || categoryLower.includes('architecture')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>',
+        '#059669'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  if (categoryLower.includes('park') || categoryLower.includes('garden')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />',
+        '#10B981'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  if (categoryLower.includes('street') || categoryLower.includes('road')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />',
+        '#DC2626'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  if (categoryLower.includes('museum') || categoryLower.includes('gallery')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+        '#7C3AED'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  // Default icon for unmatched categories
+  return L.divIcon({
+    className: 'custom-marker',
+    html: getIconHtml(
+      '<path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />',
+      '#6366F1'
+    ),
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+  });
+};
 
 export const MapContainer: React.FC<MapContainerProps> = ({ 
   onLocationSelect, 
@@ -78,23 +161,10 @@ export const MapContainer: React.FC<MapContainerProps> = ({
   useEffect(() => {
     if (!mapInstanceRef.current || !landmarks || landmarks.length === 0 || markersAdded) return;
 
-    // Create custom icon for historical points
-    const historicalIcon = L.divIcon({
-      className: 'custom-marker',
-      html: `
-        <div class="bg-bay-blue rounded-full w-8 h-8 flex items-center justify-center shadow-lg border-2 border-white">
-          <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-          </svg>
-        </div>
-      `,
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-
-    // Add landmarks to map
+    // Add landmarks to map with category-specific icons
     landmarks.forEach(landmark => {
-      const marker = L.marker([landmark.latitude, landmark.longitude], { icon: historicalIcon })
+      const categoryIcon = getIconForCategory(landmark.category);
+      const marker = L.marker([landmark.latitude, landmark.longitude], { icon: categoryIcon })
         .addTo(mapInstanceRef.current!);
       
       // Store landmark data on the marker for later use
