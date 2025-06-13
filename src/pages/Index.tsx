@@ -35,9 +35,9 @@ const Index = () => {
 
   const handleLandmarkSelect = (landmark: Landmark | null) => {
     console.log('=== LANDMARK SELECT START ===');
-    console.log('Landmark select called:', { 
-      landmark: landmark?.title, 
-      isChatOpen, 
+    console.log('handleLandmarkSelect called with:', { 
+      landmark: landmark?.title,
+      isChatOpen: isChatOpen, // This should reflect the current state
       currentSelected: selectedLandmark?.title,
       landmarkToRestoreAfterChat: landmarkToRestoreAfterChat?.title 
     });
