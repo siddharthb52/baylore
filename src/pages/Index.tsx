@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { MapContainer } from '@/components/MapContainer';
 import { ChatInterface } from '@/components/ChatInterface';
@@ -63,6 +64,7 @@ const Index = () => {
           onLocationSelect={handleLocationSelect}
           selectedLandmark={selectedLandmark}
           onLandmarkSelect={handleLandmarkSelect}
+          isChatOpen={isChatOpen}
         />
       </main>
 

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -20,12 +19,14 @@ interface MapContainerProps {
   onLocationSelect?: (lat: number, lng: number) => void;
   selectedLandmark: Landmark | null;
   onLandmarkSelect: (landmark: Landmark | null) => void;
+  isChatOpen: boolean;
 }
 
 export const MapContainer: React.FC<MapContainerProps> = ({ 
   onLocationSelect, 
   selectedLandmark, 
-  onLandmarkSelect 
+  onLandmarkSelect,
+  isChatOpen
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -97,6 +98,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       
       marker.on('click', (e) => {
         console.log('Marker clicked:', landmark.title);
+        console.log('isChatOpen at marker click:', isChatOpen);
         // Stop event propagation to prevent map click
         L.DomEvent.stopPropagation(e);
         onLandmarkSelect(landmark);
@@ -106,7 +108,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({
     });
 
     setMarkersAdded(true);
-  }, [landmarks, markersAdded, onLandmarkSelect]);
+  }, [landmarks, markersAdded, onLandmarkSelect, isChatOpen]);
 
   if (error) {
     console.error('Error loading landmarks:', error);
