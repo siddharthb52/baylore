@@ -26,7 +26,7 @@ interface MapContainerProps {
 const getIconForCategory = (category: string) => {
   const getIconHtml = (iconPath: string, bgColor: string) => `
     <div class="rounded-full w-8 h-8 flex items-center justify-center shadow-lg border-2 border-white" style="background-color: ${bgColor}">
-      <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+      <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
         ${iconPath}
       </svg>
     </div>
@@ -34,47 +34,12 @@ const getIconForCategory = (category: string) => {
 
   const categoryLower = category.toLowerCase();
   
-  if (categoryLower.includes('bridge')) {
+  // Prison - Lock/Shield icon
+  if (categoryLower.includes('prison')) {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
-        '<path fill-rule="evenodd" d="M2 10a8 8 0 018-8 8 8 0 018 8 8 8 0 01-8 8 8 8 0 01-8-8zm4-2a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />',
-        '#4F46E5'
-      ),
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-  }
-  
-  if (categoryLower.includes('building') || categoryLower.includes('architecture')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/>',
-        '#059669'
-      ),
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-  }
-  
-  if (categoryLower.includes('park') || categoryLower.includes('garden')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />',
-        '#10B981'
-      ),
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-  }
-  
-  if (categoryLower.includes('street') || categoryLower.includes('road')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />',
+        '<path d="M6 10a2 2 0 114 0v1h4V10a6 6 0 10-12 0v1h4v-1zm0 4v7h4v-7H6zm8 0v7h4v-7h-4z"/>',
         '#DC2626'
       ),
       iconSize: [32, 32],
@@ -82,12 +47,104 @@ const getIconForCategory = (category: string) => {
     });
   }
   
-  if (categoryLower.includes('museum') || categoryLower.includes('gallery')) {
+  // Architecture - Building icon
+  if (categoryLower.includes('architecture')) {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
-        '<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+        '<path d="M3 21h18V9l-9-6-9 6v12zm7-11h4v2h-4v-2zm0 4h4v2h-4v-2zm0 4h4v2h-4v-2z"/>',
+        '#4F46E5'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  // Museum - Classical building icon
+  if (categoryLower.includes('museum')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path d="M2 20h20v2H2v-2zm2-8h16l-8-6-8 6zm2 2v6h2v-6H6zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2z"/>',
         '#7C3AED'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  // Monument - Tower/Obelisk icon
+  if (categoryLower.includes('monument')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path d="M10 2l2 2v16l-2 2h4l-2-2V4l2-2h-4zm-2 18h8v2H8v-2z"/>',
+        '#6B7280'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  // Cultural Site - Pagoda/Temple icon
+  if (categoryLower.includes('cultural')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path d="M12 2l-2 3v2l2-1 2 1V5l-2-3zm-6 8l6-3 6 3v2l-6-2-6 2v-2zm0 6l6-2 6 2v2l-6-2-6 2v-2z"/>',
+        '#EC4899'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  // Tech Landmark - Computer/Chip icon
+  if (categoryLower.includes('tech')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h8v2H8V8zm0 4h6v2H8v-2zm0 4h4v2H8v-2z"/>',
+        '#059669'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  // Nature Preserve - Tree icon
+  if (categoryLower.includes('nature') || categoryLower.includes('preserve')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path d="M12 2C8.5 4 6 7.5 6 11c0 2.5 1.5 4.5 3.5 5.5L8 22h8l-1.5-5.5C16.5 15.5 18 13.5 18 11c0-3.5-2.5-7-6-9z"/>',
+        '#10B981'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  // Street - Road icon
+  if (categoryLower.includes('street') || categoryLower.includes('road')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path d="M4 12h16M4 8h16M4 16h16M8 4v16M16 4v16"/>',
+        '#F59E0B'
+      ),
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+  }
+  
+  // Misc. - General location pin
+  if (categoryLower.includes('misc')) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: getIconHtml(
+        '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>',
+        '#6366F1'
       ),
       iconSize: [32, 32],
       iconAnchor: [16, 32],
@@ -98,7 +155,7 @@ const getIconForCategory = (category: string) => {
   return L.divIcon({
     className: 'custom-marker',
     html: getIconHtml(
-      '<path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />',
+      '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>',
       '#6366F1'
     ),
     iconSize: [32, 32],
