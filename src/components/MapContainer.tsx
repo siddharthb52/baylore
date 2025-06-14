@@ -24,6 +24,8 @@ interface MapContainerProps {
 
 // Function to get icon based on category
 const getIconForCategory = (category: string) => {
+  console.log('getIconForCategory called with category:', category);
+  
   const getIconHtml = (iconPath: string, bgColor: string) => `
     <div class="rounded-full w-8 h-8 flex items-center justify-center shadow-lg border-2 border-white" style="background-color: ${bgColor}">
       <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -33,9 +35,11 @@ const getIconForCategory = (category: string) => {
   `;
 
   const categoryLower = category.toLowerCase();
+  console.log('Category toLowerCase:', categoryLower);
   
-  // Golden Gate - Use Golden Gate SVG
-  if (categoryLower.includes('golden gate')) {
+  // Golden Gate - Use Golden Gate SVG - try multiple matching patterns
+  if (categoryLower.includes('golden gate') || categoryLower === 'golden gate' || category === 'Golden Gate') {
+    console.log('✅ Golden Gate category matched! Using Golden Gate.svg');
     return L.icon({
       iconUrl: '/Golden Gate.svg',
       iconSize: [32, 32],
@@ -75,7 +79,7 @@ const getIconForCategory = (category: string) => {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
-        '<path d="M2 20h20v2H2v-2zm2-8h16l-8-6-8 6zm2 2v6h2v-6H6zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2z"/>',
+        '<path d="M2 20h20v2H2v-2zm2-8h16l-8-6-8 6zm2 2v6h2v-6H6zm4 0v6h2v-6h-4zm0 4h4v2H8v-2zm0 4h4v2H8v-2z"/>',
         '#7C3AED'
       ),
       iconSize: [32, 32],
@@ -88,7 +92,7 @@ const getIconForCategory = (category: string) => {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
-        '<path d="M10 2l2 2v16l-2 2h4l-2-2V4l2-2h-4zm-2 18h8v2H8v-2z"/>',
+        '<path d="M10 2l2 2v16l-2 2h4l-2-2V4l2-2h-4zm-2 18h8v2H8v-2zm0 6l6-3 6 3v2l-6-2-6 2v-2zm0 6l6-2 6 2v2l-6-2-6 2v-2z"/>',
         '#6B7280'
       ),
       iconSize: [32, 32],
@@ -159,6 +163,7 @@ const getIconForCategory = (category: string) => {
   }
   
   // Default icon for unmatched categories
+  console.log('❌ No category match found, using default icon for category:', category);
   return L.divIcon({
     className: 'custom-marker',
     html: getIconHtml(
@@ -225,8 +230,11 @@ export const MapContainer: React.FC<MapContainerProps> = ({
   useEffect(() => {
     if (!mapInstanceRef.current || !landmarks || landmarks.length === 0 || markersAdded) return;
 
+    console.log('Adding landmarks to map. All landmarks:', landmarks.map(l => ({ title: l.title, category: l.category })));
+
     // Add landmarks to map with category-specific icons
     landmarks.forEach(landmark => {
+      console.log(`Processing landmark: ${landmark.title} with category: "${landmark.category}"`);
       const categoryIcon = getIconForCategory(landmark.category);
       const marker = L.marker([landmark.latitude, landmark.longitude], { icon: categoryIcon })
         .addTo(mapInstanceRef.current!);
