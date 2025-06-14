@@ -32,12 +32,13 @@ const getIconForCategory = (category: string) => {
     </div>
   `;
 
-  const categoryLower = category.toLowerCase();
+  console.log('Processing category:', category);
   
-  // Golden Gate - Use Golden Gate SVG
-  if (categoryLower.includes('golden gate')) {
+  // Golden Gate - Use Golden Gate SVG (exact match with space)
+  if (category === 'Golden Gate') {
+    console.log('Matched Golden Gate category, using golden-gate.svg');
     return L.icon({
-      iconUrl: '/Golden Gate.svg',
+      iconUrl: '/golden-gate.svg',
       iconSize: [32, 32],
       iconAnchor: [16, 32],
       popupAnchor: [0, -32],
@@ -45,7 +46,7 @@ const getIconForCategory = (category: string) => {
   }
   
   // Prison - Lock/Shield icon
-  if (categoryLower.includes('prison')) {
+  if (category.toLowerCase().includes('prison')) {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
@@ -58,7 +59,7 @@ const getIconForCategory = (category: string) => {
   }
   
   // Architecture - Building icon
-  if (categoryLower.includes('architecture')) {
+  if (category.toLowerCase().includes('architecture')) {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
@@ -71,11 +72,11 @@ const getIconForCategory = (category: string) => {
   }
   
   // Museum - Classical building icon
-  if (categoryLower.includes('museum')) {
+  if (category.toLowerCase().includes('museum')) {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
-        '<path d="M2 20h20v2H2v-2zm2-8h16l-8-6-8 6zm2 2v6h2v-6H6zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2z"/>',
+        '<path d="M2 20h20v2H2v-2zm2-8h16l-8-6-8 6zm2 2v6h2v-6H6zm4 0v6h2v-6h-4zm0 4h6v2H8v-2zm0 4h4v2H8v-2z"/>',
         '#7C3AED'
       ),
       iconSize: [32, 32],
@@ -84,7 +85,7 @@ const getIconForCategory = (category: string) => {
   }
   
   // Monument - Tower/Obelisk icon
-  if (categoryLower.includes('monument')) {
+  if (category.toLowerCase().includes('monument')) {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
@@ -97,7 +98,7 @@ const getIconForCategory = (category: string) => {
   }
   
   // Cultural Site - Pagoda/Temple icon
-  if (categoryLower.includes('cultural')) {
+  if (category.toLowerCase().includes('cultural')) {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
@@ -110,7 +111,7 @@ const getIconForCategory = (category: string) => {
   }
   
   // Tech Landmark - Computer/Chip icon
-  if (categoryLower.includes('tech')) {
+  if (category.toLowerCase().includes('tech')) {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
@@ -123,7 +124,7 @@ const getIconForCategory = (category: string) => {
   }
   
   // Nature Preserve - Custom trees SVG
-  if (categoryLower.includes('nature') || categoryLower.includes('preserve')) {
+  if (category.toLowerCase().includes('nature') || category.toLowerCase().includes('preserve')) {
     return L.icon({
       iconUrl: '/trees.svg',
       iconSize: [32, 32],
@@ -133,7 +134,7 @@ const getIconForCategory = (category: string) => {
   }
   
   // Street - Road icon
-  if (categoryLower.includes('street') || categoryLower.includes('road')) {
+  if (category.toLowerCase().includes('street') || category.toLowerCase().includes('road')) {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
@@ -146,7 +147,7 @@ const getIconForCategory = (category: string) => {
   }
   
   // Misc. - General location pin
-  if (categoryLower.includes('misc')) {
+  if (category.toLowerCase().includes('misc')) {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
