@@ -34,6 +34,16 @@ const getIconForCategory = (category: string) => {
 
   const categoryLower = category.toLowerCase();
   
+  // Golden Gate - Use Golden Gate SVG
+  if (categoryLower.includes('golden gate')) {
+    return L.icon({
+      iconUrl: '/Golden Gate.svg',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
+    });
+  }
+  
   // Prison - Lock/Shield icon
   if (categoryLower.includes('prison')) {
     return L.divIcon({
