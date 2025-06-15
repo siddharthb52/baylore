@@ -275,9 +275,9 @@ export const MapContainer: React.FC<MapContainerProps> = ({
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
 
-      {/* Selected point popup - moved to top-right */}
+      {/* Selected point popup - moved to bottom-left */}
       {selectedLandmark && (
-        <div className="absolute top-4 right-4 z-[1000] w-80 md:w-96">
+        <div className="absolute bottom-4 left-4 z-[1000] w-80 md:w-96">
           <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl animate-fade-in">
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between">
