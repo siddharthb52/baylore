@@ -9,7 +9,6 @@ const Index = () => {
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | undefined>();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
-  const [landmarkToRestoreAfterChat, setLandmarkToRestoreAfterChat] = useState<Landmark | null>(null);
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setCurrentLocation({ lat, lng });
@@ -17,42 +16,12 @@ const Index = () => {
   };
 
   const handleChatToggle = () => {
-    console.log('Chat toggle - before:', { isChatOpen, selectedLandmark: selectedLandmark?.title, landmarkToRestoreAfterChat: landmarkToRestoreAfterChat?.title });
-    
-    if (!isChatOpen) {
-      // Opening chat - remember current landmark to restore later and hide it
-      setLandmarkToRestoreAfterChat(selectedLandmark);
-      setSelectedLandmark(null);
-      console.log('Opening chat - storing landmark:', selectedLandmark?.title);
-    } else {
-      // Closing chat - restore the landmark that should be shown
-      console.log('Closing chat - restoring landmark:', landmarkToRestoreAfterChat?.title);
-      setSelectedLandmark(landmarkToRestoreAfterChat);
-      setLandmarkToRestoreAfterChat(null);
-    }
     setIsChatOpen(!isChatOpen);
   };
 
   const handleLandmarkSelect = (landmark: Landmark | null) => {
-    console.log('=== LANDMARK SELECT START ===');
-    console.log('handleLandmarkSelect called with:', { 
-      landmark: landmark?.title,
-      isChatOpen: isChatOpen, // This should reflect the current state
-      currentSelected: selectedLandmark?.title,
-      landmarkToRestoreAfterChat: landmarkToRestoreAfterChat?.title 
-    });
-    
-    if (isChatOpen) {
-      // If chat is open, update what landmark should be shown when chat closes
-      console.log('Chat is open - BEFORE updating landmarkToRestoreAfterChat:', landmarkToRestoreAfterChat?.title);
-      setLandmarkToRestoreAfterChat(landmark);
-      console.log('Chat is open - AFTER setting landmarkToRestoreAfterChat to:', landmark?.title);
-    } else {
-      // If chat is closed, show the landmark immediately
-      console.log('Chat is closed - setting selectedLandmark to:', landmark?.title);
-      setSelectedLandmark(landmark);
-    }
-    console.log('=== LANDMARK SELECT END ===');
+    console.log('Landmark selected:', landmark?.title);
+    setSelectedLandmark(landmark);
   };
 
   return (
@@ -64,7 +33,6 @@ const Index = () => {
           onLocationSelect={handleLocationSelect}
           selectedLandmark={selectedLandmark}
           onLandmarkSelect={handleLandmarkSelect}
-          isChatOpen={isChatOpen}
         />
       </main>
 

@@ -19,7 +19,6 @@ interface MapContainerProps {
   onLocationSelect?: (lat: number, lng: number) => void;
   selectedLandmark: Landmark | null;
   onLandmarkSelect: (landmark: Landmark | null) => void;
-  isChatOpen: boolean;
 }
 
 // Function to get icon based on category
@@ -174,8 +173,7 @@ const getIconForCategory = (category: string) => {
 export const MapContainer: React.FC<MapContainerProps> = ({ 
   onLocationSelect, 
   selectedLandmark, 
-  onLandmarkSelect,
-  isChatOpen
+  onLandmarkSelect
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -240,7 +238,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({
     setMarkersAdded(true);
   }, [landmarks, markersAdded]);
 
-  // Separate effect to handle marker click events with current isChatOpen state
+  // Simplified marker click event handling
   useEffect(() => {
     if (!markersAdded || markersRef.current.length === 0) return;
 
@@ -249,18 +247,17 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       marker.off('click');
     });
 
-    // Add fresh click handlers with current state
+    // Add fresh click handlers
     markersRef.current.forEach(marker => {
       marker.on('click', (e) => {
         const landmark = (marker as any).landmarkData;
         console.log('Marker clicked:', landmark.title);
-        console.log('isChatOpen at marker click:', isChatOpen);
         // Stop event propagation to prevent map click
         L.DomEvent.stopPropagation(e);
         onLandmarkSelect(landmark);
       });
     });
-  }, [markersAdded, isChatOpen, onLandmarkSelect]);
+  }, [markersAdded, onLandmarkSelect]);
 
   if (error) {
     console.error('Error loading landmarks:', error);
@@ -278,17 +275,9 @@ export const MapContainer: React.FC<MapContainerProps> = ({
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
 
-      {isLoading && (
-        <div className="absolute top-4 left-4 z-[1000]">
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
-            <p className="text-sm text-gray-600">Loading landmarks...</p>
-          </div>
-        </div>
-      )}
-
-      {/* Selected point popup */}
+      {/* Selected point popup - moved to top-right */}
       {selectedLandmark && (
-        <div className="absolute bottom-4 left-4 right-4 z-[1000] md:left-auto md:w-96">
+        <div className="absolute top-4 right-4 z-[1000] w-80 md:w-96">
           <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl animate-fade-in">
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between">
