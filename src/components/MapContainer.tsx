@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -275,24 +276,24 @@ export const MapContainer: React.FC<MapContainerProps> = ({
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
 
-      {/* Selected point popup - moved to bottom-left */}
+      {/* Selected landmark popup - responsive bottom-left positioning */}
       {selectedLandmark && (
-        <div className="absolute bottom-4 left-4 z-[1000] w-80 md:w-96">
+        <div className="absolute bottom-4 left-4 z-[1000] w-[30vw] min-w-[320px] max-w-[480px] max-h-[70vh]">
           <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl animate-fade-in">
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between">
-                <CardTitle className="text-lg text-bay-blue">{selectedLandmark.title}</CardTitle>
+                <CardTitle className="text-base lg:text-lg text-bay-blue pr-2">{selectedLandmark.title}</CardTitle>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => onLandmarkSelect(null)}
-                  className="h-auto p-1 text-gray-500 hover:text-gray-700"
+                  className="h-auto p-1 text-gray-500 hover:text-gray-700 flex-shrink-0"
                 >
                   ×
                 </Button>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="bg-golden-accent/10 text-golden-accent">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="secondary" className="bg-golden-accent/10 text-golden-accent text-xs">
                   {selectedLandmark.category}
                 </Badge>
                 {selectedLandmark.year_built && (
@@ -302,9 +303,9 @@ export const MapContainer: React.FC<MapContainerProps> = ({
                 )}
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-3 overflow-y-auto max-h-[50vh]">
               {selectedLandmark.image_url && (
-                <div className="w-full h-48 rounded-lg overflow-hidden">
+                <div className="w-full h-32 sm:h-40 lg:h-48 rounded-lg overflow-hidden">
                   <img 
                     src={selectedLandmark.image_url} 
                     alt={selectedLandmark.title}
@@ -312,7 +313,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({
                   />
                 </div>
               )}
-              <p className="text-gray-700 text-sm leading-relaxed">{selectedLandmark.summary}</p>
+              <p className="text-gray-700 text-xs sm:text-sm leading-relaxed">{selectedLandmark.summary}</p>
               
               {selectedLandmark.architect && (
                 <div className="text-xs text-gray-600">
