@@ -113,7 +113,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-[1000] w-[25vw] min-w-[300px] max-w-[400px] max-h-[70vh]">
+    <div className="fixed bottom-2 right-4 z-[1000] w-[25vw] min-w-[300px] max-w-[400px] max-h-[calc(100vh-1rem)]">
       <Card className="bg-white border-0 shadow-2xl flex flex-col h-full">
         <CardHeader className="pb-2 bg-bay-blue text-white rounded-t-lg flex-shrink-0">
           <div className="flex items-center justify-between">
