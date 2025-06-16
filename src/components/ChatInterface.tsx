@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -113,7 +114,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   }
 
   return (
-    <div className="fixed bottom-2 right-4 z-[1000] w-[25vw] min-w-[300px] max-w-[400px] max-h-[calc(100vh-1rem)]">
+    <div className="fixed bottom-2 right-4 z-[1000] w-[25vw] min-w-[300px] max-w-[400px] h-[500px] max-h-[calc(100vh-2rem)]">
       <Card className="bg-white border-0 shadow-2xl flex flex-col h-full">
         <CardHeader className="pb-2 bg-bay-blue text-white rounded-t-lg flex-shrink-0">
           <div className="flex items-center justify-between">
@@ -133,7 +134,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         </CardHeader>
         
         <CardContent className="p-0 flex-1 flex flex-col min-h-0">
-          <div className="flex-1 p-3 lg:p-4 space-y-2 lg:space-y-3 overflow-y-auto">
+          <div className="flex-1 p-3 lg:p-4 space-y-2 lg:space-y-3 overflow-y-auto min-h-0">
             {messages.map((message) => (
               <div
                 key={message.id}
