@@ -1,11 +1,11 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
 import { useLandmarks } from '@/hooks/useLandmarks';
+import { useMapMarkers } from '@/hooks/useMapMarkers';
+import { MapToggleControl } from '@/components/MapToggleControl';
+import { LandmarkPopup } from '@/components/LandmarkPopup';
 import { Landmark } from '@/types/landmarks';
 
 // Fix for default markers in Leaflet
@@ -22,169 +22,6 @@ interface MapContainerProps {
   onLandmarkSelect: (landmark: Landmark | null) => void;
 }
 
-// Function to create image-based icon
-const getImageIcon = (landmark: Landmark) => {
-  const imageUrl = landmark.image_url || '/placeholder.svg';
-  
-  return L.divIcon({
-    className: 'custom-image-marker',
-    html: `
-      <div class="w-8 h-8 rounded-full border-2 border-white shadow-lg overflow-hidden bg-white flex items-center justify-center">
-        <img src="${imageUrl}" alt="${landmark.title}" class="w-full h-full object-cover" onerror="this.src='/placeholder.svg'" />
-      </div>
-    `,
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-  });
-};
-
-// Function to get icon based on category
-const getIconForCategory = (category: string) => {
-  const getIconHtml = (iconPath: string, bgColor: string) => `
-    <div class="rounded-full w-8 h-8 flex items-center justify-center shadow-lg border-2 border-white" style="background-color: ${bgColor}">
-      <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-        ${iconPath}
-      </svg>
-    </div>
-  `;
-
-  console.log('Processing category:', category);
-  
-  // Golden Gate - Use Golden Gate SVG (exact match with space)
-  if (category === 'Golden Gate') {
-    console.log('Matched Golden Gate category, using golden-gate.svg');
-    return L.icon({
-      iconUrl: '/golden-gate.svg',
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32],
-    });
-  }
-  
-  // Prison - Lock/Shield icon
-  if (category.toLowerCase().includes('prison')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M6 10a2 2 0 114 0v1h4V10a6 6 0 10-12 0v1h4v-1zm0 4v7h4v-7H6zm8 0v7h4v-7h-4z"/>',
-        '#DC2626'
-      ),
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-  }
-  
-  // Architecture - Building icon
-  if (category.toLowerCase().includes('architecture')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M3 21h18V9l-9-6-9 6v12zm7-11h4v2h-4v-2zm0 4h4v2h-4v-2zm0 4h4v2h-4v-2z"/>',
-        '#4F46E5'
-      ),
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-  }
-  
-  // Museum - Use museum.svg file
-  if (category.toLowerCase().includes('museum')) {
-    console.log('Matched Museum category, using museum.svg');
-    return L.icon({
-      iconUrl: '/museum.svg',
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32],
-    });
-  }
-  
-  // Monument - Tower/Obelisk icon
-  if (category.toLowerCase().includes('monument')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M10 2l2 3v2l2-1 2 1V5l-2-3zm-6 8l6-3 6 3v2l-6-2-6 2v-2zm0 6l6-2 6 2v2l-6-2-6 2v-2z"/>',
-        '#6B7280'
-      ),
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-  }
-  
-  // Cultural Site - Pagoda/Temple icon
-  if (category.toLowerCase().includes('cultural')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M12 2l-2 3v2l2-1 2 1V5l-2-3zm-6 8l6-3 6 3v2l-6-2-6 2v-2zm0 6l6-2 6 2v2l-6-2-6 2v-2z"/>',
-        '#EC4899'
-      ),
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-  }
-  
-  // Tech Landmark - Computer/Chip icon
-  if (category.toLowerCase().includes('tech')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h8v2H8V8zm0 4h6v2H8v-2zm0 4h4v2H8v-2z"/>',
-        '#059669'
-      ),
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-  }
-  
-  // Nature Preserve - Custom trees SVG
-  if (category.toLowerCase().includes('nature') || category.toLowerCase().includes('preserve')) {
-    return L.icon({
-      iconUrl: '/trees.svg',
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32],
-    });
-  }
-  
-  // Street - Road icon
-  if (category.toLowerCase().includes('street') || category.toLowerCase().includes('road')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M4 12h16M4 8h16M4 16h16M8 4v16M16 4v16"/>',
-        '#F59E0B'
-      ),
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-  }
-  
-  // Misc. - General location pin
-  if (category.toLowerCase().includes('misc')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>',
-        '#6366F1'
-      ),
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-  }
-  
-  // Default icon for unmatched categories
-  return L.divIcon({
-    className: 'custom-marker',
-    html: getIconHtml(
-      '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>',
-      '#6366F1'
-    ),
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-  });
-};
-
 export const MapContainer: React.FC<MapContainerProps> = ({ 
   onLocationSelect, 
   selectedLandmark, 
@@ -192,11 +29,17 @@ export const MapContainer: React.FC<MapContainerProps> = ({
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<L.Marker[]>([]);
-  const [markersAdded, setMarkersAdded] = useState(false);
   const [useImageIcons, setUseImageIcons] = useState(false);
   
   const { data: landmarks, isLoading, error } = useLandmarks();
+
+  // Initialize map markers using the custom hook
+  const { markersRef } = useMapMarkers({
+    map: mapInstanceRef.current,
+    landmarks,
+    useImageIcons,
+    onLandmarkSelect
+  });
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
@@ -237,49 +80,6 @@ export const MapContainer: React.FC<MapContainerProps> = ({
     };
   }, [onLocationSelect]);
 
-  // Updated markers effect to handle icon toggle
-  useEffect(() => {
-    if (!mapInstanceRef.current || !landmarks || landmarks.length === 0) return;
-
-    // Clear existing markers
-    markersRef.current.forEach(marker => marker.remove());
-    markersRef.current = [];
-
-    // Add landmarks to map with appropriate icons
-    landmarks.forEach(landmark => {
-      const icon = useImageIcons ? getImageIcon(landmark) : getIconForCategory(landmark.category);
-      const marker = L.marker([landmark.latitude, landmark.longitude], { icon })
-        .addTo(mapInstanceRef.current!);
-      
-      // Store landmark data on the marker for later use
-      (marker as any).landmarkData = landmark;
-      markersRef.current.push(marker);
-    });
-
-    setMarkersAdded(true);
-  }, [landmarks, useImageIcons]);
-
-  // Simplified marker click event handling
-  useEffect(() => {
-    if (!markersAdded || markersRef.current.length === 0) return;
-
-    // Remove existing click handlers
-    markersRef.current.forEach(marker => {
-      marker.off('click');
-    });
-
-    // Add fresh click handlers
-    markersRef.current.forEach(marker => {
-      marker.on('click', (e) => {
-        const landmark = (marker as any).landmarkData;
-        console.log('Marker clicked:', landmark.title);
-        // Stop event propagation to prevent map click
-        L.DomEvent.stopPropagation(e);
-        onLandmarkSelect(landmark);
-      });
-    });
-  }, [markersAdded, onLandmarkSelect]);
-
   if (error) {
     console.error('Error loading landmarks:', error);
     return (
@@ -296,84 +96,16 @@ export const MapContainer: React.FC<MapContainerProps> = ({
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
 
-      {/* Icon toggle control - positioned in upper right */}
-      <div className="absolute top-4 right-4 z-[1000]">
-        <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-lg">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-medium text-gray-700">Icons</span>
-              <Switch
-                checked={useImageIcons}
-                onCheckedChange={setUseImageIcons}
-                className="scale-75"
-              />
-              <span className="text-xs font-medium text-gray-700">Images</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <MapToggleControl 
+        useImageIcons={useImageIcons}
+        onToggle={setUseImageIcons}
+      />
 
-      {/* Selected landmark popup - responsive bottom-left positioning */}
       {selectedLandmark && (
-        <div className="absolute bottom-4 left-4 z-[1000] w-[30vw] min-w-[320px] max-w-[480px] max-h-[70vh]">
-          <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl animate-fade-in">
-            <CardHeader className="pb-2">
-              <div className="flex items-start justify-between">
-                <CardTitle className="text-base lg:text-lg text-bay-blue pr-2">{selectedLandmark.title}</CardTitle>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onLandmarkSelect(null)}
-                  className="h-auto p-1 text-gray-500 hover:text-gray-700 flex-shrink-0"
-                >
-                  ×
-                </Button>
-              </div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <Badge variant="secondary" className="bg-golden-accent/10 text-golden-accent text-xs">
-                  {selectedLandmark.category}
-                </Badge>
-                {selectedLandmark.year_built && (
-                  <Badge variant="outline" className="text-xs">
-                    Built {selectedLandmark.year_built}
-                  </Badge>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3 overflow-y-auto max-h-[50vh]">
-              {selectedLandmark.image_url && (
-                <div className="w-full h-32 sm:h-40 lg:h-48 rounded-lg overflow-hidden">
-                  <img 
-                    src={selectedLandmark.image_url} 
-                    alt={selectedLandmark.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              <p className="text-gray-700 text-xs sm:text-sm leading-relaxed">{selectedLandmark.summary}</p>
-              
-              {selectedLandmark.architect && (
-                <div className="text-xs text-gray-600">
-                  <strong>Architect:</strong> {selectedLandmark.architect}
-                </div>
-              )}
-              
-              {selectedLandmark.fun_facts && selectedLandmark.fun_facts.length > 0 && (
-                <div className="space-y-1">
-                  <p className="text-xs font-medium text-gray-700">Fun Facts:</p>
-                  <ul className="text-xs text-gray-600 space-y-1">
-                    {selectedLandmark.fun_facts.slice(0, 2).map((fact, index) => (
-                      <li key={index} className="flex items-start gap-1">
-                        <span className="text-golden-accent mt-1">•</span>
-                        <span>{fact}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+        <LandmarkPopup 
+          landmark={selectedLandmark}
+          onClose={() => onLandmarkSelect(null)}
+        />
       )}
     </div>
   );
