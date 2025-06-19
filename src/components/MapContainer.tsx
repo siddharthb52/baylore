@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -71,16 +70,14 @@ const getIconForCategory = (category: string) => {
     });
   }
   
-  // Museum - Classical building icon
+  // Museum - Use museum.svg file
   if (category.toLowerCase().includes('museum')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M2 20h20v2H2v-2zm2-8h16l-8-6-8 6zm2 2v6h2v-6H6zm4 0v6h2v-6h-4zm0 4h6v2H8v-2zm0 4h4v2H8v-2z"/>',
-        '#7C3AED'
-      ),
+    console.log('Matched Museum category, using museum.svg');
+    return L.icon({
+      iconUrl: '/museum.svg',
       iconSize: [32, 32],
       iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
     });
   }
   
