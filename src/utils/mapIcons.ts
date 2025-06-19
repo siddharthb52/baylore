@@ -10,7 +10,7 @@ export const getImageIcon = (landmark: Landmark) => {
     className: 'custom-image-marker',
     html: `
       <div class="w-8 h-8 rounded-full border-2 border-white shadow-lg overflow-hidden bg-white flex items-center justify-center">
-        <img src="${imageUrl}" alt="${landmark.title}" class="w-full h-full object-cover" onerror="this.src='/placeholder.svg'" />
+        <img src="${imageUrl}" alt="${landmark.title}" class="w-full h-full object-cover min-w-full min-h-full" onerror="this.src='/placeholder.svg'" />
       </div>
     `,
     iconSize: [32, 32],
