@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { useLandmarks } from '@/hooks/useLandmarks';
 import { Landmark } from '@/types/landmarks';
 
@@ -20,6 +21,22 @@ interface MapContainerProps {
   selectedLandmark: Landmark | null;
   onLandmarkSelect: (landmark: Landmark | null) => void;
 }
+
+// Function to create image-based icon
+const getImageIcon = (landmark: Landmark) => {
+  const imageUrl = landmark.image_url || '/placeholder.svg';
+  
+  return L.divIcon({
+    className: 'custom-image-marker',
+    html: `
+      <div class="w-8 h-8 rounded-full border-2 border-white shadow-lg overflow-hidden bg-white flex items-center justify-center">
+        <img src="${imageUrl}" alt="${landmark.title}" class="w-full h-full object-cover" onerror="this.src='/placeholder.svg'" />
+      </div>
+    `,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+  });
+};
 
 // Function to get icon based on category
 const getIconForCategory = (category: string) => {
@@ -86,7 +103,7 @@ const getIconForCategory = (category: string) => {
     return L.divIcon({
       className: 'custom-marker',
       html: getIconHtml(
-        '<path d="M10 2l2 2v16l-2 2h4l-2-2V4l2-2h-4zm-2 18h8v2H8v-2z"/>',
+        '<path d="M10 2l2 3v2l2-1 2 1V5l-2-3zm-6 8l6-3 6 3v2l-6-2-6 2v-2zm0 6l6-2 6 2v2l-6-2-6 2v-2z"/>',
         '#6B7280'
       ),
       iconSize: [32, 32],
@@ -177,6 +194,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
   const [markersAdded, setMarkersAdded] = useState(false);
+  const [useImageIcons, setUseImageIcons] = useState(false);
   
   const { data: landmarks, isLoading, error } = useLandmarks();
 
@@ -219,13 +237,18 @@ export const MapContainer: React.FC<MapContainerProps> = ({
     };
   }, [onLocationSelect]);
 
+  // Updated markers effect to handle icon toggle
   useEffect(() => {
-    if (!mapInstanceRef.current || !landmarks || landmarks.length === 0 || markersAdded) return;
+    if (!mapInstanceRef.current || !landmarks || landmarks.length === 0) return;
 
-    // Add landmarks to map with category-specific icons
+    // Clear existing markers
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
+
+    // Add landmarks to map with appropriate icons
     landmarks.forEach(landmark => {
-      const categoryIcon = getIconForCategory(landmark.category);
-      const marker = L.marker([landmark.latitude, landmark.longitude], { icon: categoryIcon })
+      const icon = useImageIcons ? getImageIcon(landmark) : getIconForCategory(landmark.category);
+      const marker = L.marker([landmark.latitude, landmark.longitude], { icon })
         .addTo(mapInstanceRef.current!);
       
       // Store landmark data on the marker for later use
@@ -234,7 +257,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({
     });
 
     setMarkersAdded(true);
-  }, [landmarks, markersAdded]);
+  }, [landmarks, useImageIcons]);
 
   // Simplified marker click event handling
   useEffect(() => {
@@ -272,6 +295,23 @@ export const MapContainer: React.FC<MapContainerProps> = ({
   return (
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
+
+      {/* Icon toggle control - positioned in upper right */}
+      <div className="absolute top-4 right-4 z-[1000]">
+        <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-lg">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-medium text-gray-700">Icons</span>
+              <Switch
+                checked={useImageIcons}
+                onCheckedChange={setUseImageIcons}
+                className="scale-75"
+              />
+              <span className="text-xs font-medium text-gray-700">Images</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Selected landmark popup - responsive bottom-left positioning */}
       {selectedLandmark && (
