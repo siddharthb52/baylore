@@ -45,7 +45,8 @@ export const MapContainer: React.FC<MapContainerProps> = ({
     if (!mapRef.current || mapInstanceRef.current) return;
 
     // Initialize map centered on SF Bay Area
-    const map = L.map(mapRef.current).setView([37.7749, -122.4194], 12);
+    // Old coordinates for SF centering: 37.7749, -122.4194
+    const map = L.map(mapRef.current).setView([37.3745, -122.0025], 12);
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
