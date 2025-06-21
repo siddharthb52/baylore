@@ -15,7 +15,7 @@ export const LandmarkPopup: React.FC<LandmarkPopupProps> = ({
   onClose 
 }) => {
   return (
-    <div className="absolute bottom-4 left-4 z-[1000] w-[30vw] min-w-[320px] max-w-[480px] max-h-[70vh]">
+    <div className="fixed bottom-4 left-4 z-[1001] w-[90vw] sm:w-[30vw] min-w-[320px] max-w-[480px] max-h-[70vh]">
       <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl animate-fade-in">
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between">
