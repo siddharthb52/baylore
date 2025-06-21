@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 import { MapContainer } from '@/components/MapContainer';
 import { ChatInterface } from '@/components/ChatInterface';
 import { Header } from '@/components/Header';
 import { Landmark } from '@/types/landmarks';
+
 const Index = () => {
   const [currentLocation, setCurrentLocation] = useState<{
     lat: number;
@@ -10,6 +12,7 @@ const Index = () => {
   } | undefined>();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
+
   const handleLocationSelect = (lat: number, lng: number) => {
     setCurrentLocation({
       lat,
@@ -20,32 +23,59 @@ const Index = () => {
       lng
     });
   };
+
   const handleChatToggle = () => {
     setIsChatOpen(!isChatOpen);
   };
+
   const handleLandmarkSelect = (landmark: Landmark | null) => {
     console.log('Landmark selected:', landmark?.title);
     setSelectedLandmark(landmark);
   };
-  return <div className="min-h-screen bg-gray-50 relative overflow-hidden">
+
+  const handleOverlayClick = () => {
+    // Dismiss the overlay by setting a default location
+    setCurrentLocation({
+      lat: 37.3745,
+      lng: -122.0025
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
       <Header />
       
       <main className="pt-16 h-screen">
-        <MapContainer onLocationSelect={handleLocationSelect} selectedLandmark={selectedLandmark} onLandmarkSelect={handleLandmarkSelect} />
+        <MapContainer 
+          onLocationSelect={handleLocationSelect} 
+          selectedLandmark={selectedLandmark} 
+          onLandmarkSelect={handleLandmarkSelect} 
+        />
       </main>
 
-      <ChatInterface currentLocation={currentLocation} isOpen={isChatOpen} onToggle={handleChatToggle} />
+      <ChatInterface 
+        currentLocation={currentLocation} 
+        isOpen={isChatOpen} 
+        onToggle={handleChatToggle} 
+      />
 
-      {/* Welcome overlay for first-time users. This will disappear once the user clicks the map and the current location becomes defined. */}
-      {!currentLocation && <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-[999] pointer-events-none">
-          <div className="text-center text-white bg-black/50 p-8 rounded-lg backdrop-blur-sm pointer-events-auto max-w-md mx-4">
+      {/* Welcome overlay for first-time users. This will disappear once the user clicks anywhere. */}
+      {!currentLocation && (
+        <div 
+          className="absolute inset-0 bg-black/20 flex items-center justify-center z-[999] cursor-pointer"
+          onClick={handleOverlayClick}
+        >
+          <div className="text-center text-white bg-black/50 p-8 rounded-lg backdrop-blur-sm max-w-md mx-4">
             <h2 className="text-2xl font-bold mb-4">Welcome to BayLore!</h2>
             
             <div className="text-golden-accent font-medium">
-              ✨ Start exploring to uncover local history
+              ✨ Click anywhere to start exploring local history
             </div>
           </div>
-        </div>}
-    </div>;
+        </div>
+      )}
+    </div>
+  );
 };
+
 export default Index;
