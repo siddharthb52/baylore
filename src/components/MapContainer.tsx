@@ -44,19 +44,36 @@ export const MapContainer: React.FC<MapContainerProps> = ({
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
-    // Initialize map centered on SF Bay Area with lower zoom level
+    // Define Bay Area bounds to prevent extreme zoom/pan
+    const bayAreaBounds = L.latLngBounds(
+      [36.8, -123.0], // Southwest corner
+      [38.0, -121.0]  // Northeast corner
+    );
+
+    // Initialize map with strict bounds and zoom controls
     const map = L.map(mapRef.current, {
       minZoom: 8,
-      maxZoom: 18,
+      maxZoom: 16,
+      maxBounds: bayAreaBounds,
+      maxBoundsViscosity: 1.0, // Prevent dragging outside bounds
       zoomControl: true,
-    }).setView([37.3745, -122.0025], 9);
+      scrollWheelZoom: true,
+      doubleClickZoom: true,
+      touchZoom: true,
+    }).setView([37.3745, -122.0025], 10); // Slightly lower zoom
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
+    // Ensure map stays within bounds after initialization
+    map.fitBounds(bayAreaBounds, { padding: [20, 20] });
+
     mapInstanceRef.current = map;
+
+    // Prevent auto-fitting when markers are added
+    map.off('autopanstart');
 
     return () => {
       // Only clean up on component unmount
@@ -83,6 +100,20 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       }
     };
   }, [onLocationSelect]);
+
+  // Prevent zoom changes from auto-fitting to markers
+  useEffect(() => {
+    if (!mapInstanceRef.current || !landmarks || landmarks.length === 0) return;
+
+    // Ensure map doesn't auto-fit to markers - maintain current view
+    const currentCenter = mapInstanceRef.current.getCenter();
+    const currentZoom = mapInstanceRef.current.getZoom();
+    
+    // If zoom is still reasonable, maintain it
+    if (currentZoom >= 8 && currentZoom <= 16) {
+      mapInstanceRef.current.setView(currentCenter, currentZoom);
+    }
+  }, [landmarks]);
 
   if (error) {
     console.error('Error loading landmarks:', error);
