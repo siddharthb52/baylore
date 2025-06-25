@@ -1,0 +1,19 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer Circle with White Stroke -->
+  <circle cx="16" cy="16" r="15.5" fill="#9C7CBF" stroke="white" stroke-width="1" />
+
+  <!-- Roof (moved up) -->
+  <polygon points="16,5 8,11 24,11" fill="white" />
+
+  <!-- Cross Beam (moved up) -->
+  <rect x="8" y="11" width="16" height="2" fill="white" />
+
+  <!-- Columns (moved up) -->
+  <rect x="9" y="13" width="2" height="10" fill="white" />
+  <rect x="13" y="13" width="2" height="10" fill="white" />
+  <rect x="17" y="13" width="2" height="10" fill="white" />
+  <rect x="21" y="13" width="2" height="10" fill="white" />
+
+  <!-- Base (moved up) -->
+  <rect x="8" y="23" width="16" height="2" fill="white" />
+</svg>
