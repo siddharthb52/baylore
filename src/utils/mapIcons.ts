@@ -1,4 +1,3 @@
-
 import L from 'leaflet';
 import { Landmark } from '@/types/landmarks';
 
@@ -117,10 +116,10 @@ export const getIconForCategory = (category: string) => {
     });
   }
   
-  // Nature Preserve - Custom trees SVG
+  // Nature Preserve - Realistic trees PNG
   if (category.toLowerCase().includes('nature') || category.toLowerCase().includes('preserve')) {
     return L.icon({
-      iconUrl: '/trees.svg',
+      iconUrl: '/trees-realistic.png',
       iconSize: [32, 32],
       iconAnchor: [16, 32],
       popupAnchor: [0, -32],
