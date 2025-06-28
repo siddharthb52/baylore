@@ -58,6 +58,13 @@ export const LandmarkPopup: React.FC<LandmarkPopupProps> = ({
             </div>
           )}
           
+          {landmark.historical_significance && (
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-gray-700">Historical Significance:</p>
+              <p className="text-xs text-gray-600 leading-relaxed">{landmark.historical_significance}</p>
+            </div>
+          )}
+          
           {landmark.fun_facts && landmark.fun_facts.length > 0 && (
             <div className="space-y-1">
               <p className="text-xs font-medium text-gray-700">Fun Facts:</p>
