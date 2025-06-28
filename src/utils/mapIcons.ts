@@ -1,3 +1,4 @@
+
 import L from 'leaflet';
 import { Landmark } from '@/types/landmarks';
 
@@ -116,8 +117,10 @@ export const getIconForCategory = (category: string) => {
     });
   }
   
-  // Nature Preserve - Realistic trees PNG
-  if (category.toLowerCase().includes('nature') || category.toLowerCase().includes('preserve')) {
+  // Parks, Nature Preserves, and Nature areas - Realistic trees PNG
+  if (category.toLowerCase().includes('nature') || 
+      category.toLowerCase().includes('preserve') || 
+      category.toLowerCase().includes('park')) {
     return L.icon({
       iconUrl: '/trees-realistic.png',
       iconSize: [32, 32],
