@@ -1,4 +1,3 @@
-
 import L from 'leaflet';
 import { Landmark } from '@/types/landmarks';
 
@@ -41,16 +40,14 @@ export const getIconForCategory = (category: string) => {
     });
   }
   
-  // Prison - Lock/Shield icon
+  // Prison - Use cuffs.png
   if (category.toLowerCase().includes('prison')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M6 10a2 2 0 114 0v1h4V10a6 6 0 10-12 0v1h4v-1zm0 4v7h4v-7H6zm8 0v7h4v-7h-4z"/>',
-        '#DC2626'
-      ),
+    console.log('Matched Prison category, using cuffs.png');
+    return L.icon({
+      iconUrl: '/cuffs.png',
       iconSize: [32, 32],
       iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
     });
   }
   
@@ -91,16 +88,14 @@ export const getIconForCategory = (category: string) => {
     });
   }
   
-  // Cultural Site - Pagoda/Temple icon
+  // Cultural Site - Use palace.png
   if (category.toLowerCase().includes('cultural')) {
-    return L.divIcon({
-      className: 'custom-marker',
-      html: getIconHtml(
-        '<path d="M12 2l-2 3v2l2-1 2 1V5l-2-3zm-6 8l6-3 6 3v2l-6-2-6 2v-2zm0 6l6-2 6 2v2l-6-2-6 2v-2z"/>',
-        '#EC4899'
-      ),
+    console.log('Matched Cultural category, using palace.png');
+    return L.icon({
+      iconUrl: '/palace.png',
       iconSize: [32, 32],
       iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
     });
   }
   
