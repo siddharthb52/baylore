@@ -1,3 +1,4 @@
+
 import L from 'leaflet';
 import { Landmark } from '@/types/landmarks';
 
@@ -45,6 +46,17 @@ export const getIconForCategory = (category: string) => {
     console.log('Matched Prison category, using cuffs.png');
     return L.icon({
       iconUrl: '/cuffs.png',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
+    });
+  }
+  
+  // Winery - Use grapes.png
+  if (category.toLowerCase().includes('winery')) {
+    console.log('Matched Winery category, using grapes.png');
+    return L.icon({
+      iconUrl: '/grapes.png',
       iconSize: [32, 32],
       iconAnchor: [16, 32],
       popupAnchor: [0, -32],
