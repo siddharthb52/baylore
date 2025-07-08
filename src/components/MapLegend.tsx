@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Map } from 'lucide-react';
 
 const legendItems = [
@@ -17,31 +17,31 @@ const svgIcons = [
   { 
     category: 'Architecture', 
     label: 'Architecture',
-    svg: '<path d="M3 21h18V9l-9-6-9 6v12zm7-11h4v2h-4v-2zm0 4h4v2h-4v-2zm0 4h4v2h-4v-2z"/>',
+    svg: 'M3 21h18V9l-9-6-9 6v12zm7-11h4v2h-4v-2zm0 4h4v2h-4v-2zm0 4h4v2h-4v-2z',
     color: '#4F46E5'
   },
   { 
     category: 'Monument', 
     label: 'Monument',
-    svg: '<path d="M10 2l2 3v2l2-1 2 1V5l-2-3zm-6 8l6-3 6 3v2l-6-2-6 2v-2zm0 6l6-2 6 2v2l-6-2-6 2v-2z"/>',
+    svg: 'M10 2l2 3v2l2-1 2 1V5l-2-3zm-6 8l6-3 6 3v2l-6-2-6 2v-2zm0 6l6-2 6 2v2l-6-2-6 2v-2z',
     color: '#6B7280'
   },
   { 
     category: 'Tech', 
     label: 'Tech Landmark',
-    svg: '<path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h8v2H8V8zm0 4h6v2H8v-2zm0 4h4v2H8v-2z"/>',
+    svg: 'M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h8v2H8V8zm0 4h6v2H8v-2zm0 4h4v2H8v-2z',
     color: '#059669'
   },
   { 
     category: 'Street', 
     label: 'Street/Road',
-    svg: '<path d="M4 12h16M4 8h16M4 16h16M8 4v16M16 4v16"/>',
+    svg: 'M4 12h16M4 8h16M4 16h16M8 4v16M16 4v16',
     color: '#F59E0B'
   },
   { 
     category: 'Misc', 
     label: 'Miscellaneous',
-    svg: '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>',
+    svg: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
     color: '#6366F1'
   },
 ];
@@ -64,6 +64,9 @@ export const MapLegend: React.FC = () => {
       <DialogContent className="max-w-md max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>Map Legend</DialogTitle>
+          <DialogDescription>
+            Icon categories for map landmarks
+          </DialogDescription>
         </DialogHeader>
         <div className="overflow-y-auto max-h-[60vh] space-y-3">
           {/* Image-based icons */}
