@@ -61,7 +61,7 @@ export const MapLegend: React.FC = () => {
           <span className="ml-2 text-xs">Legend</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md max-h-[80vh]">
+      <DialogContent className="max-w-md max-h-[80vh] z-[1100]">
         <DialogHeader>
           <DialogTitle>Map Legend</DialogTitle>
           <DialogDescription>
