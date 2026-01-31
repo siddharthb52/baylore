@@ -16,7 +16,9 @@ Explore the historical significance of locations, landmarks, and cultural sites 
 
 ## Quick Start
 
+Clone this repo, and then run:
 ```bash
+cd baylore
 npm install
 npm run dev
 ```
