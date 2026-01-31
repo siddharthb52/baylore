@@ -1,7 +1,17 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Ensure full-height layout for map and overlay */
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+#root {
+  min-height: 100%;
+  height: 100%;
+}
 
 @layer base {
   :root {
