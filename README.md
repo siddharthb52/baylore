@@ -38,3 +38,8 @@ Open [http://localhost:8080](http://localhost:8080).
 - **AI Chat** – Requires `OPENAI_API_KEY` in your Supabase project: Edge Functions → Settings → add `OPENAI_API_KEY`.
 
 For full setup details, troubleshooting, and local Edge Function development, see [ANALYSIS.md](./ANALYSIS.md).
+
+## Demo
+
+<img width="1919" height="783" alt="image" src="https://github.com/user-attachments/assets/88c94e8e-b7d9-4499-b8ae-18d35c00f94e" />
+
