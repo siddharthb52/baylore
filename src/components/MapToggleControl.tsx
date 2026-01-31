@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { MapPin, Image } from 'lucide-react';
+import { MapLegend } from '@/components/MapLegend';
 
 interface MapToggleControlProps {
   useImageIcons: boolean;
@@ -14,7 +15,7 @@ export const MapToggleControl: React.FC<MapToggleControlProps> = ({
   onToggle 
 }) => {
   return (
-    <div className="absolute top-4 right-4 z-[1000]">
+    <div className="absolute top-4 right-4 z-[1000] space-y-3">
       <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-lg">
         <CardContent className="p-4">
           <div className="space-y-3">
@@ -39,6 +40,8 @@ export const MapToggleControl: React.FC<MapToggleControlProps> = ({
           </div>
         </CardContent>
       </Card>
+      
+      <MapLegend />
     </div>
   );
 };

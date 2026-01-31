@@ -1,10 +1,10 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useLandmarks } from '@/hooks/useLandmarks';
 import { useMapMarkers } from '@/hooks/useMapMarkers';
 import { MapToggleControl } from '@/components/MapToggleControl';
+import { MapCompass } from '@/components/MapCompass';
 import { LandmarkPopup } from '@/components/LandmarkPopup';
 import { Landmark } from '@/types/landmarks';
 
@@ -130,6 +130,8 @@ export const MapContainer: React.FC<MapContainerProps> = ({
   return (
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
+
+      <MapCompass />
 
       <MapToggleControl 
         useImageIcons={useImageIcons}
