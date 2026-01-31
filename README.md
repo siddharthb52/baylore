@@ -23,15 +23,6 @@ npm run dev
 
 Open [http://localhost:8080](http://localhost:8080).
 
-## Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server (port 8080) |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run lint` | Run ESLint |
-
 ## Setup Notes
 
 - **Map & landmarks** – Work out of the box; the project uses built-in Supabase credentials.
