@@ -29,7 +29,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
-  const [useImageIcons, setUseImageIcons] = useState(false);
+  const [useImageIcons, setUseImageIcons] = useState(true);
   
   const { data: landmarks, isLoading, error } = useLandmarks();
 
