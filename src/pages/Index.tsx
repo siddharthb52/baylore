@@ -1,41 +1,64 @@
-import React, { useState, lazy, Suspense, Component } from 'react';
+import React, { useState } from 'react';
+import { MapContainer } from '@/components/MapContainer';
+import { ChatInterface } from '@/components/ChatInterface';
 import { Header } from '@/components/Header';
 import { Landmark } from '@/types/landmarks';
 
-const MapContainer = lazy(() => import('@/components/MapContainer').then(m => ({ default: m.MapContainer })));
-
-class MapErrorBoundary extends Component<{ children: React.ReactNode }, { error: Error | null }> {
-  state = { error: null as Error | null };
-  static getDerivedStateFromError(error: Error) { return { error }; }
-  render() {
-    if (this.state.error) {
-      return (
-        <div className="p-4 bg-red-50 text-red-700 rounded">
-          <strong>Map failed to load:</strong>
-          <pre className="mt-2 text-sm overflow-auto">{this.state.error.message}</pre>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
 const Index = () => {
+  const [currentLocation, setCurrentLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | undefined>();
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
 
+  const handleLocationSelect = (lat: number, lng: number) => {
+    setCurrentLocation({ lat, lng });
+  };
+
+  const handleChatToggle = () => {
+    setIsChatOpen(!isChatOpen);
+  };
+
+  const handleLandmarkSelect = (landmark: Landmark | null) => {
+    setSelectedLandmark(landmark);
+  };
+
+  const handleOverlayClick = () => {
+    setCurrentLocation({ lat: 37.3745, lng: -122.0025 });
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
       <Header />
+
       <main className="pt-16 h-screen">
-        <MapErrorBoundary>
-          <Suspense fallback={<div className="p-4">Loading map…</div>}>
-            <MapContainer
-              selectedLandmark={selectedLandmark}
-              onLandmarkSelect={setSelectedLandmark}
-            />
-          </Suspense>
-        </MapErrorBoundary>
+        <MapContainer
+          onLocationSelect={handleLocationSelect}
+          selectedLandmark={selectedLandmark}
+          onLandmarkSelect={handleLandmarkSelect}
+        />
       </main>
+
+      <ChatInterface
+        currentLocation={currentLocation}
+        isOpen={isChatOpen}
+        onToggle={handleChatToggle}
+      />
+
+      {!currentLocation && (
+        <div
+          className="absolute inset-0 bg-black/20 flex items-center justify-center z-[999] cursor-pointer"
+          onClick={handleOverlayClick}
+        >
+          <div className="text-center text-white bg-black/50 p-8 rounded-lg backdrop-blur-sm max-w-md mx-4">
+            <h2 className="text-2xl font-bold mb-4">Welcome to BayLore!</h2>
+            <div className="text-golden-accent font-medium">
+              ✨ Click anywhere to start exploring local history
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

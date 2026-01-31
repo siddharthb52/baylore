@@ -1,18 +1,40 @@
+# BayLore
 
+Explore the historical significance of locations, landmarks, and cultural sites throughout the San Francisco Bay Area.
 
-## What technologies are used for this project?
+## Features
 
-This project is built with:
+- **Interactive Map** – Leaflet-based map with landmark pinpoints
+- **Landmark Popups** – Historical info, dates, and visuals
+- **AI Chatbot** – Ask questions about Bay Area history, landmarks, and famous figures
+- **Map Toggle** – Switch between symbol icons and actual pictures for landmarks
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Tech Stack
 
-## What features and functions does this project contain?
+- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, shadcn-ui, React Leaflet
+- **Backend**: Supabase (database + Edge Functions), OpenAI GPT-4o-mini
 
-- Interactive map of the bay area with landmark pinpoints
-- Pop up windows for each landmark including visuals, relevant date info, and chunks of history
-- An AI-based chatbot for asking questions regarding the Bay Area--specifically concerning famous figures, landmark names, and historical events.
-- The ability to toggle between two different settings for icon rendering--symbols or actual pictures.
+## Quick Start
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:8080](http://localhost:8080).
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server (port 8080) |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
+
+## Setup Notes
+
+- **Map & landmarks** – Work out of the box; the project uses built-in Supabase credentials.
+- **AI Chat** – Requires `OPENAI_API_KEY` in your Supabase project: Edge Functions → Settings → add `OPENAI_API_KEY`.
+
+For full setup details, troubleshooting, and local Edge Function development, see [ANALYSIS.md](./ANALYSIS.md).

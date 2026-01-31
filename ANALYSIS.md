@@ -196,7 +196,7 @@ supabase functions deploy bay-area-chat
 ## Environment Variables
 
 ### Frontend
-No environment variables required for frontend (Supabase credentials are hardcoded in client.ts).
+Supabase credentials use `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` with fallbacks to project defaults—no `.env` required for basic use. To override, create `.env.local` with these variables.
 
 ### Backend (Edge Function)
 - `OPENAI_API_KEY` - Required for AI chat functionality
