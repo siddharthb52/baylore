@@ -14,6 +14,15 @@ Explore the historical significance of locations, landmarks, and cultural sites 
 - **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, shadcn-ui, React Leaflet
 - **Backend**: Supabase (database + Edge Functions), OpenAI GPT-4o-mini
 
+## Prerequisites
+
+- **Node.js v20+** (includes npm)
+
+Check your version with:
+```bash
+node -v
+
+
 ## Quick Start
 
 Clone this repo, and then run:
