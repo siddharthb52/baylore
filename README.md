@@ -21,6 +21,7 @@ Explore the historical significance of locations, landmarks, and cultural sites 
 Check your version with:
 ```bash
 node -v
+```
 
 
 ## Quick Start
