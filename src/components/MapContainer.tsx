@@ -116,7 +116,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({
   }, [landmarks]);
 
   if (error) {
-    console.error('Error loading landmarks:', error);
+    if (import.meta.env.DEV) console.error('Error loading landmarks:', error);
     return (
       <div className="relative w-full h-full flex items-center justify-center">
         <div className="text-center">

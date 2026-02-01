@@ -28,11 +28,8 @@ export const getIconForCategory = (category: string) => {
     </div>
   `;
 
-  console.log('Processing category:', category);
-  
   // Golden Gate - Use Golden Gate SVG (exact match with space)
   if (category === 'Golden Gate') {
-    console.log('Matched Golden Gate category, using golden-gate.svg');
     return L.icon({
       iconUrl: '/golden-gate.svg',
       iconSize: [32, 32],
@@ -43,7 +40,6 @@ export const getIconForCategory = (category: string) => {
   
   // Prison - Use cuffs.png
   if (category.toLowerCase().includes('prison')) {
-    console.log('Matched Prison category, using cuffs.png');
     return L.icon({
       iconUrl: '/cuffs.png',
       iconSize: [32, 32],
@@ -54,7 +50,6 @@ export const getIconForCategory = (category: string) => {
   
   // Winery - Use grapes.png
   if (category.toLowerCase().includes('winery')) {
-    console.log('Matched Winery category, using grapes.png');
     return L.icon({
       iconUrl: '/grapes.png',
       iconSize: [32, 32],
@@ -78,7 +73,6 @@ export const getIconForCategory = (category: string) => {
   
   // Museum - Use museum.svg file
   if (category.toLowerCase().includes('museum')) {
-    console.log('Matched Museum category, using museum.svg');
     return L.icon({
       iconUrl: '/museum.svg',
       iconSize: [32, 32],
@@ -102,7 +96,6 @@ export const getIconForCategory = (category: string) => {
   
   // Cultural Site - Use palace.png
   if (category.toLowerCase().includes('cultural')) {
-    console.log('Matched Cultural category, using palace.png');
     return L.icon({
       iconUrl: '/palace.png',
       iconSize: [32, 32],
