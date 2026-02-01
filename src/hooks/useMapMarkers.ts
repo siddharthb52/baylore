@@ -50,7 +50,6 @@ export const useMapMarkers = ({ map, landmarks, useImageIcons, onLandmarkSelect 
     markersRef.current.forEach(marker => {
       marker.on('click', (e) => {
         const landmark = (marker as any).landmarkData;
-        console.log('Marker clicked:', landmark.title);
         // Stop event propagation to prevent map click
         L.DomEvent.stopPropagation(e);
         onLandmarkSelect(landmark);

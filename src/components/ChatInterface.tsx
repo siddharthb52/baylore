@@ -59,7 +59,6 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     setIsTyping(true);
 
     try {
-      console.log('Calling bay-area-chat function...');
       const { data, error } = await supabase.functions.invoke('bay-area-chat', {
         body: {
           message: inputValue,
@@ -71,16 +70,19 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         throw error;
       }
 
+      const content = data?.response ?? "I'm sorry, I couldn't generate a response.";
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        content: data.response,
+        content,
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error('Error calling AI:', error);
+
+      // Dev logs
+      if (import.meta.env.DEV) console.error('Error calling AI:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'bot',

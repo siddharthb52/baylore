@@ -16,6 +16,13 @@ serve(async (req) => {
   }
 
   try {
+    if (!openAIApiKey) {
+      return new Response(
+        JSON.stringify({ error: 'OpenAI API key not configured. Set OPENAI_API_KEY in Supabase Dashboard → Edge Functions → Settings.' }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { message, currentLocation } = await req.json();
 
     // Build context based on location if provided
