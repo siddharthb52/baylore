@@ -1,6 +1,6 @@
 # BayLore
 
-Explore the historical significance of locations, landmarks, and cultural sites throughout the San Francisco Bay Area.
+This application allows one to explore the historical significance of locations, landmarks, and cultural sites throughout the San Francisco Bay Area.
 
 ## Features
 
@@ -18,11 +18,6 @@ Explore the historical significance of locations, landmarks, and cultural sites 
 
 - **Node.js v20+** (includes npm)
 
-Check your version with:
-```bash
-node -v
-```
-
 
 ## Quick Start
 
@@ -35,7 +30,7 @@ npm run dev
 
 Open [http://localhost:8080](http://localhost:8080).
 
-## Setup Notes
+## Setup Notes for Devs
 
 - **Map & landmarks** – Work out of the box; the project uses built-in Supabase credentials.
 - **AI Chat** – Requires `OPENAI_API_KEY` in your Supabase project: Edge Functions → Settings → add `OPENAI_API_KEY`.
