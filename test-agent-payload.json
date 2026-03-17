@@ -1,0 +1,33 @@
+{
+  "city": "Berkeley, CA",
+  "targetCount": 1,
+  "exampleLandmarks": [
+    {
+      "title": "Golden Gate Bridge",
+      "latitude": 37.8199,
+      "longitude": -122.4783,
+      "summary": "Completed in 1937, this iconic suspension bridge spans the Golden Gate strait connecting San Francisco to Marin County. Designed by chief engineer Joseph Strauss, it held the world record for longest suspension bridge span at the time of construction.",
+      "category": "Golden Gate",
+      "year_built": 1937,
+      "architect": "Joseph Strauss",
+      "historical_significance": "The Golden Gate Bridge revolutionized Bay Area transportation and became an internationally recognized symbol of San Francisco and engineering achievement.",
+      "fun_facts": [
+        "The bridge's International Orange color was originally meant to be temporary primer",
+        "It took just over four years to construct, completing ahead of schedule in 1937"
+      ]
+    },
+    {
+      "title": "Alcatraz Island",
+      "latitude": 37.8270,
+      "longitude": -122.4230,
+      "summary": "This notorious federal prison operated from 1934 to 1963, housing some of America's most dangerous criminals including Al Capone and Robert Stroud. The isolated island fortress was considered inescapable, though several inmates attempted daring escapes.",
+      "category": "Prison",
+      "year_built": 1934,
+      "historical_significance": "Alcatraz represents a unique chapter in American criminal justice history and is now one of the Bay Area's most popular tourist attractions, welcoming over 1.5 million visitors annually.",
+      "fun_facts": [
+        "No prisoner is known to have successfully escaped from Alcatraz, though five are still listed as missing",
+        "The island was also the site of the first lighthouse on the West Coast, built in 1854"
+      ]
+    }
+  ]
+}
