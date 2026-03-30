@@ -1,3 +1,5 @@
+/// <reference types="https://deno.land/v1/deno.d.ts" />
+
 // Agent node implementations
 import { getPlannerPrompt, getDiscoveryPrompt, getEnrichmentPrompt, getCriticPrompt } from "./prompts.ts";
 import { searchWikipedia, getWikimediaImage, isInBayArea, verifyUrl } from "./tools.ts";
