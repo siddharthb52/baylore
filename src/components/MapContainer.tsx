@@ -46,8 +46,11 @@ export const MapContainer: React.FC<MapContainerProps> = ({
 
     // Define Bay Area bounds to prevent extreme zoom/pan
     const bayAreaBounds = L.latLngBounds(
-      [36.8, -123.0], // Southwest corner
-      [38.0, -121.0]  // Northeast corner
+      [36.95, -122.75], // Southwest corner (tighter)
+      [37.95, -121.55]  // Northeast corner (tighter)
+      // Previous bounds:
+      // [36.9, -122.9], // Southwest corner
+      // [38.0, -121.1]  // Northeast corner
     );
 
     // Initialize map with strict bounds and zoom controls
@@ -57,6 +60,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       maxBounds: bayAreaBounds,
       maxBoundsViscosity: 1.0, // Prevent dragging outside bounds
       zoomControl: true,
+      attributionControl: false,
       scrollWheelZoom: true,
       doubleClickZoom: true,
       touchZoom: true,

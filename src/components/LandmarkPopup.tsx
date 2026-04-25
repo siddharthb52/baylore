@@ -42,12 +42,19 @@ export const LandmarkPopup: React.FC<LandmarkPopupProps> = ({
         </CardHeader>
         <CardContent className="space-y-3 overflow-y-auto max-h-[50vh]">
           {landmark.image_url && (
-            <div className="w-full h-32 sm:h-40 lg:h-48 rounded-lg overflow-hidden">
-              <img 
-                src={landmark.image_url} 
-                alt={landmark.title}
-                className="w-full h-full object-cover"
-              />
+            <div className="space-y-1">
+              <div className="w-full h-32 sm:h-40 lg:h-48 rounded-lg overflow-hidden">
+                <img 
+                  src={landmark.image_url} 
+                  alt={landmark.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {landmark.image_credit && (
+                <p className="text-[10px] sm:text-xs text-gray-500">
+                  Image credit: {landmark.image_credit}
+                </p>
+              )}
             </div>
           )}
           <p className="text-gray-700 text-xs sm:text-sm leading-relaxed">{landmark.summary}</p>

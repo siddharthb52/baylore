@@ -11,6 +11,7 @@ export interface Landmark {
   historical_significance?: string;
   fun_facts?: string[];
   image_url?: string;
+  image_credit?: string;
   website_url?: string;
   created_at: string;
   updated_at: string;
