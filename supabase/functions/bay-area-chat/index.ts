@@ -9,6 +9,129 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+type ChatRole = 'user' | 'assistant';
+
+interface ChatContextMessage {
+  role?: string;
+  content?: string;
+}
+
+interface LandmarkContext {
+  title?: string;
+  latitude?: number;
+  longitude?: number;
+  summary?: string;
+  category?: string;
+  year_built?: number | null;
+  architect?: string | null;
+  historical_significance?: string | null;
+  fun_facts?: string[] | null;
+  website_url?: string | null;
+}
+
+interface LocationContext {
+  lat?: number;
+  lng?: number;
+}
+
+const sanitizeConversationHistory = (conversationHistory: unknown): Array<{ role: ChatRole; content: string }> => {
+  if (!Array.isArray(conversationHistory)) return [];
+
+  return conversationHistory
+    .slice(-10)
+    .map((message: ChatContextMessage) => {
+      const role = message.role === 'assistant' ? 'assistant' : message.role === 'user' ? 'user' : null;
+      const content = typeof message.content === 'string' ? message.content.trim() : '';
+
+      if (!role || !content) return null;
+
+      return { role, content };
+    })
+    .filter((message): message is { role: ChatRole; content: string } => message !== null);
+};
+
+const buildLocationContext = (currentLocation: LocationContext | null | undefined): string => {
+  if (
+    typeof currentLocation?.lat !== 'number' ||
+    typeof currentLocation?.lng !== 'number'
+  ) {
+    return '';
+  }
+
+  return `CURRENT MAP LOCATION:\nThe user has selected map coordinates ${currentLocation.lat}, ${currentLocation.lng} in the San Francisco Bay Area. Use this for nearby historical suggestions when relevant, but do not treat coordinates as more specific than the selected landmark context. Do not infer an exact address from coordinates alone.`;
+};
+
+const buildSelectedLandmarkContext = (selectedLandmark: LandmarkContext | null | undefined): string => {
+  if (!selectedLandmark?.title) {
+    return 'CURRENTLY SELECTED LANDMARK:\nNo landmark is currently selected. Any landmark mentioned in conversation history is from an earlier turn and should not be treated as the current landmark.';
+  }
+
+  const details = [
+    `Title: ${selectedLandmark.title}`,
+    selectedLandmark.category ? `Category: ${selectedLandmark.category}` : null,
+    typeof selectedLandmark.year_built === 'number' ? `Year built: ${selectedLandmark.year_built}` : null,
+    selectedLandmark.architect ? `Architect/designer: ${selectedLandmark.architect}` : null,
+    typeof selectedLandmark.latitude === 'number' && typeof selectedLandmark.longitude === 'number'
+      ? `Coordinates: ${selectedLandmark.latitude}, ${selectedLandmark.longitude}`
+      : null,
+    selectedLandmark.summary ? `Summary: ${selectedLandmark.summary}` : null,
+    selectedLandmark.historical_significance
+      ? `Historical significance: ${selectedLandmark.historical_significance}`
+      : null,
+    selectedLandmark.fun_facts?.length
+      ? `Fun facts: ${selectedLandmark.fun_facts.join(' | ')}`
+      : null,
+    selectedLandmark.website_url ? `Reference URL: ${selectedLandmark.website_url}` : null,
+  ].filter(Boolean);
+
+  return `CURRENTLY SELECTED LANDMARK:\nThis is the only current selected landmark. It supersedes any different landmark mentioned in conversation history.\n${details.join('\n')}`;
+};
+
+const isCurrentViewQuestion = (message: string): boolean => {
+  const normalizedMessage = message.toLowerCase();
+
+  return [
+    /what .*am i .*looking at/,
+    /what .*landmark .*looking at/,
+    /what .*is .*this (landmark|place|location|site)/,
+    /which .*landmark/,
+    /where .*am i/,
+  ].some((pattern) => pattern.test(normalizedMessage));
+};
+
+const buildCurrentLandmarkAnswer = (selectedLandmark: LandmarkContext): string => {
+  const title = selectedLandmark.title;
+  const descriptor = [
+    selectedLandmark.category,
+    typeof selectedLandmark.year_built === 'number' ? `built in ${selectedLandmark.year_built}` : null,
+  ].filter(Boolean).join(', ');
+
+  const intro = descriptor
+    ? `You're looking at ${title}, a ${descriptor}.`
+    : `You're looking at ${title}.`;
+
+  if (selectedLandmark.summary) {
+    return `${intro} ${selectedLandmark.summary}`;
+  }
+
+  if (selectedLandmark.historical_significance) {
+    return `${intro} ${selectedLandmark.historical_significance}`;
+  }
+
+  return `${intro} I do not have more detailed app context for this landmark yet.`;
+};
+
+const buildNoCurrentLandmarkAnswer = (currentLocation: LocationContext | null | undefined): string => {
+  if (
+    typeof currentLocation?.lat === 'number' &&
+    typeof currentLocation?.lng === 'number'
+  ) {
+    return `No landmark is currently selected. The map has coordinates selected near ${currentLocation.lat}, ${currentLocation.lng}, but I do not have a specific landmark selected to identify.`;
+  }
+
+  return 'No landmark is currently selected. Select a marker on the map and I can identify it for you.';
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -23,23 +146,51 @@ serve(async (req) => {
       );
     }
 
-    const { message, currentLocation } = await req.json();
+    const { message, currentLocation, selectedLandmark, conversationHistory } = await req.json();
+    const userMessage = typeof message === 'string' ? message.trim() : '';
 
-    // Build context based on location if provided
-    let locationContext = "";
-    if (currentLocation) {
-      locationContext = `The user is currently near coordinates ${currentLocation.lat}, ${currentLocation.lng} in the San Francisco Bay Area. `;
+    if (!userMessage) {
+      return new Response(
+        JSON.stringify({ error: 'Message is required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (isCurrentViewQuestion(userMessage)) {
+      const responseText = selectedLandmark?.title
+        ? buildCurrentLandmarkAnswer(selectedLandmark)
+        : buildNoCurrentLandmarkAnswer(currentLocation);
+
+      return new Response(JSON.stringify({ response: responseText }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const appContext = [
+      buildSelectedLandmarkContext(selectedLandmark),
+      buildLocationContext(currentLocation),
+    ].filter(Boolean).join('\n\n');
+
+    const chatMessages = sanitizeConversationHistory(conversationHistory);
+    if (chatMessages.length === 0 || chatMessages[chatMessages.length - 1].content !== userMessage) {
+      chatMessages.push({ role: 'user', content: userMessage });
     }
 
     const systemPrompt = `You are BayLore, an AI guide specializing in San Francisco Bay Area history and culture. You help users discover the historical significance of locations, landmarks, streets, neighborhoods, and cultural sites throughout the Bay Area.
 
-${locationContext}
+${appContext ? `AVAILABLE APP CONTEXT:\n${appContext}` : 'AVAILABLE APP CONTEXT:\nNo map or landmark context was provided for this turn.'}
 
 CORE PRINCIPLES:
 - ACCURACY FIRST: Only share information you are confident is historically accurate
 - When uncertain about specific dates, names, or details, acknowledge this uncertainty
 - Prefer saying "I don't have reliable information about that specific detail" over guessing
 - Focus on well-documented historical facts and widely accepted historical narratives
+- Use recent conversation history to understand follow-up questions, pronouns, and user intent
+- Treat AVAILABLE APP CONTEXT as the current app state. For questions about the current selection, current map view, or "this" place, it overrides any older landmark, map location, or selection mentioned in conversation history
+- If CURRENTLY SELECTED LANDMARK is provided and the user asks what they are looking at, what this landmark/place is, or asks about "this" location, answer from the selected landmark first and name it explicitly
+- If no landmark is currently selected, do not identify an older landmark from conversation history as the current landmark
+- Use CURRENT MAP LOCATION as secondary context; never answer with only coordinates when a selected landmark is available
+- Do not pretend the provided app context is a primary historical source; treat it as app/database context
 
 STAY ON TOPIC: Only answer questions related to Bay Area history, culture, geography, architecture, and local heritage. This includes:
 - Historical landmarks and their origins (Golden Gate Bridge, Alcatraz, Coit Tower, etc.)
@@ -79,7 +230,7 @@ Be helpful, engaging, and focus on the rich, verified stories that make the Bay 
         model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: message }
+          ...chatMessages
         ],
         max_tokens: 500,
         temperature: 0.7,

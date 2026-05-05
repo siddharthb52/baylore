@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { MessageCircle, Send, Bot, User } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { Landmark } from '@/types/landmarks';
 
 interface Message {
   id: string;
@@ -13,14 +14,21 @@ interface Message {
   timestamp: Date;
 }
 
+interface ChatContextMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 interface ChatInterfaceProps {
   currentLocation?: { lat: number; lng: number };
+  selectedLandmark?: Landmark | null;
   isOpen: boolean;
   onToggle: () => void;
 }
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ 
   currentLocation, 
+  selectedLandmark,
   isOpen, 
   onToggle 
 }) => {
@@ -44,15 +52,24 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     scrollToBottom();
   }, [messages]);
 
+  const buildConversationHistory = (conversation: Message[]): ChatContextMessage[] => {
+    return conversation.slice(-10).map((message) => ({
+      role: message.type === 'bot' ? 'assistant' : 'user',
+      content: message.content
+    }));
+  };
+
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isTyping) return;
 
+    const outgoingMessage = inputValue.trim();
     const userMessage: Message = {
       id: Date.now().toString(),
       type: 'user',
-      content: inputValue,
+      content: outgoingMessage,
       timestamp: new Date()
     };
+    const conversationHistory = buildConversationHistory([...messages, userMessage]);
 
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
@@ -61,8 +78,10 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     try {
       const { data, error } = await supabase.functions.invoke('bay-area-chat', {
         body: {
-          message: inputValue,
-          currentLocation: currentLocation
+          message: outgoingMessage,
+          currentLocation,
+          selectedLandmark,
+          conversationHistory
         }
       });
 

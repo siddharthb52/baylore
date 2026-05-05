@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Globe } from 'lucide-react';
 import { MapContainer } from '@/components/MapContainer';
 import { ChatInterface } from '@/components/ChatInterface';
 import { Header } from '@/components/Header';
@@ -42,6 +43,7 @@ const Index = () => {
 
       <ChatInterface
         currentLocation={currentLocation}
+        selectedLandmark={selectedLandmark}
         isOpen={isChatOpen}
         onToggle={handleChatToggle}
       />
@@ -51,10 +53,14 @@ const Index = () => {
           className="absolute inset-0 bg-black/20 flex items-center justify-center z-[999] cursor-pointer"
           onClick={handleOverlayClick}
         >
-          <div className="text-center text-white bg-black/50 p-8 rounded-lg backdrop-blur-sm max-w-md mx-4">
-            <h2 className="text-2xl font-bold mb-4">Welcome to BayLore!</h2>
-            <div className="text-golden-accent font-medium">
-              ✨ Click anywhere to start exploring local history
+          <div
+            className="text-center text-white bg-black/50 p-8 rounded-lg backdrop-blur-sm max-w-md mx-4"
+            style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
+          >
+            <h2 className="text-3xl font-bold mb-4 tracking-wide">Welcome to BayLore!</h2>
+            <div className="text-golden-accent font-medium flex items-center justify-center gap-2">
+              <Globe className="h-5 w-5" aria-hidden="true" />
+              <span>Click anywhere to start exploring local history</span>
             </div>
           </div>
         </div>

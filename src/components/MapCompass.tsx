@@ -7,7 +7,7 @@ export const MapCompass: React.FC = () => {
       <img 
         src="/compass.png" 
         alt="Compass" 
-        className="w-12 h-12 object-contain"
+        className="w-20 h-20 object-contain"
       />
     </div>
   );
