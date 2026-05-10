@@ -32,7 +32,7 @@ Open [http://localhost:8080](http://localhost:8080).
 
 ## Setup Notes for Devs
 
-- **Map & landmarks** – Work out of the box; the project uses built-in Supabase credentials.
+- **Map & landmarks** – These work without preliminary set-up. The project uses built-in Supabase credentials.
 - **AI Chat** – Requires `OPENAI_API_KEY` in your Supabase project: Edge Functions → Settings → add `OPENAI_API_KEY`.
 
 For full setup details, troubleshooting, and local Edge Function development, see [ANALYSIS.md](./docs/ANALYSIS.md).
