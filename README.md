@@ -40,7 +40,7 @@ For full setup details, troubleshooting, and local Edge Function development, se
 ## Demo
 
 
-<img width="1914" height="775" alt="baylore-home-pic" src="https://github.com/user-attachments/assets/0e899afd-1de6-4e86-b803-08dea0441dd4" />
+<img width="1913" height="832" alt="image" src="https://github.com/user-attachments/assets/c58ae8b3-5c3f-425a-bfd0-34d024d05a7b" />
 
 <img width="1903" height="778" alt="baylore-sunnyvale" src="https://github.com/user-attachments/assets/f16decc4-a52d-4504-b090-dc3cda12e70f" />
 
