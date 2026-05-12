@@ -42,7 +42,11 @@ For full setup details, troubleshooting, and local Edge Function development, se
 
 <img width="1913" height="832" alt="image" src="https://github.com/user-attachments/assets/c58ae8b3-5c3f-425a-bfd0-34d024d05a7b" />
 
+
+
 <img width="1903" height="778" alt="baylore-sunnyvale" src="https://github.com/user-attachments/assets/f16decc4-a52d-4504-b090-dc3cda12e70f" />
+
+
 
 <img width="1919" height="783" alt="image" src="https://github.com/user-attachments/assets/88c94e8e-b7d9-4499-b8ae-18d35c00f94e" />
 
